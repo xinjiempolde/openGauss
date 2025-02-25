@@ -1,0 +1,11 @@
+/.gitee/
+/.vscode/
+/.idea/
+*.o
+*.so
+*.so.*
+*.a
+**/objfiles.txt
+mppdb_temp_install
+dest
+simpleInstall
