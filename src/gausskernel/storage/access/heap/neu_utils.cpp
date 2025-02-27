@@ -8,8 +8,6 @@
 #include "access/neu_utils/message.pb.h"
 #include "access/neu_utils/neu_utils.h"
 
-#include <orc_proto.pb.h>
-
 #include "access/neu_utils/snowflake_uid.h"
 #include "utils/elog.h"
 
@@ -149,6 +147,7 @@ void ApplyLogWorkerThreadMain() {
     }
 }
 
+// 工具类，将可变参数组装成std::string
 std::string vformat_string(const char* format, va_list args) {
     va_list args_copy;
     va_copy(args_copy, args); // 复制va_list（因vsnprintf会消耗参数）

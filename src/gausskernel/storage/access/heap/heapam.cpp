@@ -2773,9 +2773,28 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
     int natts = relation->rd_att->natts;
     TransactionId xid = GetCurrentTransactionId();
     const auto* attributes = relation->rd_att->attrs;
+
+    // 将HeapTuple数据解析到datum和isnull中数组中，数组长度为该关系表的属性个数
     heap_deform_tuple(tup, relation->rd_att, datum, isnull);
-    // 避免反复构造和析构
+
     std::unique_ptr<proto::Row> single_row = std::make_unique<proto::Row>();
+    // 将tuple的数据设置到protobuf格式中
+    for (int column_index = 0; column_index < natts; ++column_index) {
+        int column_len = attributes[column_index]->attlen;
+        proto::Column *column = single_row->add_column();
+        column->set_id(column_index);
+        // 判断该列是定长类型还是变长类型(字符串)
+        if (column_len < 0 && (uint32)datum[column_index] != 0) {  // 变长类型
+            column->set_value(VARDATA_ANY(datum[column_index], VARSIZE_ANY(datum[column_index]) - 1));
+        } else if (column_len > 0 && column_len <= 8) {  // 定长类型
+            column->set_value(&datum[column_index], column_len);
+        } else if (column_len > 8) {  // 原生字符串类型
+            column->set_value(reinterpret_cast<char *>(datum[column_index]), column_len);
+        } else {
+            NeuPrintLog("undefined column type, column len is %d", column_len);
+            break;
+        }
+    }
     // TODO(singheart): set key and value
     std::string key = "key:" + std::to_string(AllocateUniqueKey());
     single_row->set_key(key.c_str());
