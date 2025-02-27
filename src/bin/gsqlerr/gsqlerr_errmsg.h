@@ -14464,38 +14464,13 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3453, "XX000",
-	  {"Xid is invalid.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3454, "XX000",
 	  {"current transaction with handle: (%d:%u) have a valid xid: %lu already",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3456, "XX000",
-	  {"cannot commit a transaction that deleted files but has no xid",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3457, "XX000",
-	  {"cannot commit transaction %lu, it was already aborted",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3458, "54000",
-	  {"maximum number of committed subtransactions (%d) exceeded",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3459, "XX000",
 	  {"cannot abort transaction %lu, it was already committed",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3461, "0A000",
-	  {"cannot PREPARE a transaction that has exported snapshots",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -14524,16 +14499,6 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3467, "25001",
-	  {"%s cannot be executed from a function or multi-command string",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3468, "XX000",
-	  {"cannot prevent transaction chain",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3469, "25P01",
 	  {"%s can only be used in transaction blocks",
 	   "This is an internal error",
@@ -14559,11 +14524,6 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3474, "3B001",
-	  {"no such savepoint",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3475, "XX000",
 	  {"ReleaseSavepoint: unexpected state %s",
 	   "This is an internal error",
@@ -14574,18 +14534,8 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3477, "XX000",
-	  {"BeginInternalSubTransaction: unexpected state %s",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3478, "XX000",
 	  {"ReleaseCurrentSubTransaction: unexpected state %s",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3479, "XX000",
-	  {"RollbackAndReleaseCurrentSubTransaction: unexpected state %s",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -14594,18 +14544,8 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3481, "54000",
-	  {"cannot have more than 2^32-1 subtransactions in a transaction",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3482, "XX000",
 	  {"PopTransaction with no parent",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3483, "XX000",
-	  {"xact_redo: unknown op code %u",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -15659,43 +15599,8 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {3737, "XX000",
-	  {"block number %u is out of range for relation '%s'",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3739, "XX000",
-	  {"tuple already updated by self",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3740, "XX000",
-	  {"tuple concurrently updated",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3741, "XX000",
-	  {"attempted to update invisible tuple",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {3742, "XX000",
 	  {"attempted to lock invisible tuple",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3743, "55P03",
-	  {"could not obtain lock on row in relation '%s'",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3744, "XX000",
-	  {"heap_inplace_update: invalid lp",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3745, "XX000",
-	  {"heap_inplace_update: wrong tuple length",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -15756,21 +15661,6 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 
 	  {3759, "XX000",
 	  {"relation '%s' is not table or index",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3760, "XX000",
-	  {"could not open partition with OID %u",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3761, "XX000",
-	  {"openning partition %u, but relation %s %u is neither table nor index",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {3762, "XX000",
-	  {"closing partition %u, but relation %u is neither table nor index",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -17951,11 +17841,6 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 
 	  {4385, "XX000",
 	  {"invalid name of memory context: NULL or ''",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {4386, "XX000",
-	  {"Failed to receive GTM commit transaction response for DN or other CN.",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -32594,76 +32479,6 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {7504, "XX000",
-	  {"attempted to kill a tuple inserted by another transaction: %lu, %lu",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7505, "XX000",
-	  {"Can't fit xid into page. relation '%s', now xid is %lu, base is %lu, min is %u, max is %u",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7506, "XX000",
-	  {"Can't fit xid into page, now xid is %lu, base is %lu, min is %u, max is %u",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7507, "XX000",
-	  {"heap_delete: invalid tid %hu, max tid %hu, rnode[%u,%u,%u], block %u",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7508, "40001",
-	  {"attempted to delete self created tuple",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7509, "40001",
-	  {"pg_class entry for relid %u vanished during ExtractReplicaIdentity",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7510, "40001",
-	  {"tuple concurrently deleted",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7511, "XX000",
-	  {"heap_update: invalid tid %hu, max tid %hu, rnode[%u,%u,%u], block %u",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7512, "40001",
-	  {"attempted to update self created tuple",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7513, "0A000",
-	  {"relation '%s' has one big row which is not supported under 64bits XID system. Current xid is %lu",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7514, "0A000",
-	  {"relation '%s' has no free space to upgrade. Current xid is %lu, please VACUUM FULL this relation!!!",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7515, "55000",
-	  {"All built-in functions are hard coded, and they should not be updated.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7516, "XX001",
-	  {"system column in index",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7517, "XX001",
-	  {"unexpected result when restoring backup block",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {7518, "XX000",
 	  {"heap_redo: unknown op code %hhu",
 	   "This is an internal error",
@@ -32676,11 +32491,6 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 
 	  {7520, "XX000",
 	  {"heap3_redo: unknown op code %hhu",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7521, "29P04",
-	  {"partition %u is invalid",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
@@ -33719,63 +33529,8 @@ static const gsqlerr_err_msg_t g_gsqlerr_errors[] =
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 
-	  {7730, "25000",
-	  {"SaveCurrentSTPTopTransactionState can only be called in STP.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7731, "25000",
-	  {"SaveCurrentSTPTopTransactionState: unexpected state %s",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7732, "25000",
-	  {"RestoreCurrentSTPTopTransactionState can only be called in STP.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7733, "25000",
-	  {"RestoreCurrentSTPTopTransactionState:NULL, call RestoreCurrentSTPTopTransactionState firstly.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7734, "25000",
-	  {"RestoreCurrentSTPTopTransactionState: unexpected state %s",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7735, "54000",
-	  {"cannot have more than 2^32-2 commands in a transaction",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7736, "25000",
-	  {"Node %s: prepare gid is %s, and top xid is %lu, different transaction!",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
 	  {7737, "25000",
 	  {"AbortCurrentTransaction: unexpected state %s",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7738, "25001",
-	  {"non-execute cn or dn: there is already a transaction in progress",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7739, "XX000",
-	  {"Wrong type: %d in execSendSavepoint.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7740, "XX000",
-	  {"Wrong type: %d when handling savepoints.",
-	   "This is an internal error",
-	   "Please contact engineer to support."}},
-
-	  {7741, "25000",
-	  {"AbortOutOfAnyTransaction reserving top xact abort: unexpected state %s",
 	   "This is an internal error",
 	   "Please contact engineer to support."}},
 

@@ -242,7 +242,145 @@ CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
+GAUSS-03453: "Xid is invalid."
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03456: "cannot commit a transaction that deleted files but has no xid"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03457: "cannot commit transaction %lu, it was already aborted"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03458: "maximum number of committed subtransactions (%d) exceeded"
+SQLSTATE: 54000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03461: "cannot PREPARE a transaction that has exported snapshots"
+SQLSTATE: 0A000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03467: "%s cannot be executed from a function or multi-command string"
+SQLSTATE: 25001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03468: "cannot prevent transaction chain"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03474: "no such savepoint"
+SQLSTATE: 3B001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03477: "BeginInternalSubTransaction: unexpected state %s"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03479: "RollbackAndReleaseCurrentSubTransaction: unexpected state %s"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03481: "cannot have more than 2^32-1 subtransactions in a transaction"
+SQLSTATE: 54000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03483: "xact_redo: unknown op code %u"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
 GAUSS-03514: "xlog flush request %X/%X is not satisfied --- flushed only to %X/%X"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03737: "block number %u is out of range for relation '%s'"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03739: "tuple already updated by self"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03740: "tuple concurrently updated"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03741: "attempted to update invisible tuple"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03743: "could not obtain lock on row in relation '%s'"
+SQLSTATE: 55P03
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03744: "heap_inplace_update: invalid lp"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03745: "heap_inplace_update: wrong tuple length"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03760: "could not open partition with OID %u"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03761: "openning partition %u, but relation %s %u is neither table nor index"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-03762: "closing partition %u, but relation %u is neither table nor index"
+SQLSTATE: XX000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-04386: "Failed to receive GTM commit transaction response for DN or other CN."
 SQLSTATE: XX000
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
@@ -322,6 +460,162 @@ ACTION: "Please contact engineer to support."
 
 GAUSS-06875: "could not add lock when DN is not redo all xlog."
 SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07504: "attempted to kill a tuple inserted by another transaction: %lu, %lu"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07505: "Can't fit xid into page. relation '%s', now xid is %lu, base is %lu, min is %u, max is %u"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07506: "Can't fit xid into page, now xid is %lu, base is %lu, min is %u, max is %u"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07507: "heap_delete: invalid tid %hu, max tid %hu, rnode[%u,%u,%u], block %u"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07508: "attempted to delete self created tuple"
+SQLSTATE: 40001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07509: "pg_class entry for relid %u vanished during ExtractReplicaIdentity"
+SQLSTATE: 40001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07510: "tuple concurrently deleted"
+SQLSTATE: 40001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07511: "heap_update: invalid tid %hu, max tid %hu, rnode[%u,%u,%u], block %u"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07512: "attempted to update self created tuple"
+SQLSTATE: 40001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07513: "relation '%s' has one big row which is not supported under 64bits XID system. Current xid is %lu"
+SQLSTATE: 0A000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07514: "relation '%s' has no free space to upgrade. Current xid is %lu, please VACUUM FULL this relation!!!"
+SQLSTATE: 0A000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07515: "All built-in functions are hard coded, and they should not be updated."
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07516: "system column in index"
+SQLSTATE: XX001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07517: "unexpected result when restoring backup block"
+SQLSTATE: XX001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07521: "partition %u is invalid"
+SQLSTATE: 29P04
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07730: "SaveCurrentSTPTopTransactionState can only be called in STP."
+SQLSTATE: 25000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07731: "SaveCurrentSTPTopTransactionState: unexpected state %s"
+SQLSTATE: 25000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07732: "RestoreCurrentSTPTopTransactionState can only be called in STP."
+SQLSTATE: 25000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07733: "RestoreCurrentSTPTopTransactionState:NULL, call RestoreCurrentSTPTopTransactionState firstly."
+SQLSTATE: 25000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07734: "RestoreCurrentSTPTopTransactionState: unexpected state %s"
+SQLSTATE: 25000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07735: "cannot have more than 2^32-2 commands in a transaction"
+SQLSTATE: 54000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07736: "Node %s: prepare gid is %s, and top xid is %lu, different transaction!"
+SQLSTATE: 25000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07738: "non-execute cn or dn: there is already a transaction in progress"
+SQLSTATE: 25001
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07739: "Wrong type: %d in execSendSavepoint."
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07740: "Wrong type: %d when handling savepoints."
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-07741: "AbortOutOfAnyTransaction reserving top xact abort: unexpected state %s"
+SQLSTATE: 25000
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
@@ -1673,12 +1967,6 @@ ACTION: "Please contact engineer to support."
 
 
 GAUSS-03328: "could not initialize XML library"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-03453: "Xid is invalid."
 SQLSTATE: 
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
@@ -4276,36 +4564,6 @@ CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-07504: "attempted to kill a tuple inserted by another transaction: %lu, %lu"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-07505: "Can't fit xid into page. relation '%s', now xid is %lu, base is %lu, min is %u, max is %u"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-07506: "Can't fit xid into page, now xid is %lu, base is %lu, min is %u, max is %u"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-07507: "heap_delete: invalid tid %hu, max tid %hu, rnode[%u,%u,%u], block %u"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-07511: "heap_update: invalid tid %hu, max tid %hu, rnode[%u,%u,%u], block %u"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
 GAUSS-07518: "heap_redo: unknown op code %hhu"
 SQLSTATE: 
 CAUSE: "This is an internal error"
@@ -4781,18 +5039,6 @@ ACTION: "Please contact engineer to support."
 
 
 GAUSS-07725: "cannot abort prepared transaction %lu, it was already committed"
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-07739: "Wrong type: %d in execSendSavepoint."
-SQLSTATE: 
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-07740: "Wrong type: %d when handling savepoints."
 SQLSTATE: 
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
@@ -5826,7 +6072,7 @@ ACTION: "Please contact engineer to support."
 
 /********************SUMMARY******************/
 Insert ErrorMsg Num: 23
-Delete ErrorMsg Num: 35
-Incomplete ErrorMsg Num: 912
+Delete ErrorMsg Num: 84
+Incomplete ErrorMsg Num: 904
 ErrorMsg Num before Make: 7302
-ErrorMsg Num after  Make: 7290
+ErrorMsg Num after  Make: 7241

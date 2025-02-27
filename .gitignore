@@ -6,6 +6,6 @@
 *.so.*
 *.a
 **/objfiles.txt
-mppdb_temp_install
-dest
-simpleInstall
+/dest
+/simpleInstall
+/mppdb_temp_install/

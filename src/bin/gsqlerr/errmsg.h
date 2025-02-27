@@ -3190,8 +3190,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {804, "42809",
 	  { {"aclchk.cpp", 1897}, {"tablecmds.cpp", 12695}, {"tablecmds.cpp", 16813}, 
-	 {"heapam.cpp", 1466}, {"heapam.cpp", 1488}, {"heapam.cpp", 1518}, 
-	 {"heapam.cpp", 1526}, },
+	 {"heapam.cpp", 1591}, {"heapam.cpp", 1601}, },
 },
 
 	  {805, "42809",
@@ -6979,8 +6978,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {1876, "42809",
-	  { {"aclchk.cpp", 1892}, {"heapam.cpp", 1463}, {"heapam.cpp", 1485}, 
-	 {"heapam.cpp", 1514}, {"heapam.cpp", 1523}, },
+	  { {"aclchk.cpp", 1892}, },
 },
 
 	  {1877, "0LP01",
@@ -8528,7 +8526,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2362, "XX000",
 	  { {"nodeModifyTable.cpp", 1112}, {"nodeModifyTable.cpp", 1912}, {"opfusion.cpp", 2034}, 
-	 {"heapam.cpp", 4198}, },
+	 {"heapam.cpp", 4467}, },
 },
 
 	  {2363, "XX000",
@@ -8541,7 +8539,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2365, "XX000",
 	  { {"nodeModifyTable.cpp", 1552}, {"nodeModifyTable.cpp", 1783}, {"opfusion.cpp", 1848}, 
-	 {"heapam.cpp", 5192}, },
+	 {"heapam.cpp", 5521}, },
 },
 
 	  {2366, "XX000",
@@ -8555,7 +8553,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2368, "XX000",
 	  { {"nodeModifyTable.cpp", 1552}, {"nodeModifyTable.cpp", 1783}, {"opfusion.cpp", 1848}, 
-	 {"heapam.cpp", 5192}, },
+	 {"heapam.cpp", 5521}, },
 },
 
 	  {2369, "XX000",
@@ -8680,8 +8678,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {2408, "40001",
-	  { {"execMain.cpp", 2877}, {"heapam.cpp", 3889}, {"heapam.cpp", 4361}, 
-	 },
+	  { {"execMain.cpp", 2877}, },
 },
 
 	  {2409, "XX000",
@@ -12650,126 +12647,75 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 	  { {"multixact.cpp", 2040}, },
 },
 
-	  {3453, "XX000",
-	  { {"xact.cpp", 643}, },
-},
-
 	  {3454, "XX000",
 	  { {"xact.cpp", 835}, },
 },
 
-	  {3456, "XX000",
-	  { {"xact.cpp", 1580}, },
-},
-
-	  {3457, "XX000",
-	  { {"xact.cpp", 1619}, },
-},
-
-	  {3458, "54000",
-	  { {"xact.cpp", 2019}, },
-},
-
 	  {3459, "XX000",
-	  { {"xact.cpp", 2132}, },
-},
-
-	  {3461, "0A000",
-	  { {"xact.cpp", 3503}, },
+	  { {"xact.cpp", 2141}, },
 },
 
 	  {3462, "XX000",
-	  { {"xact.cpp", 4148}, },
+	  { {"xact.cpp", 4255}, },
 },
 
 	  {3463, "XX000",
-	  { {"xact.cpp", 4253}, },
+	  { {"xact.cpp", 4363}, },
 },
 
 	  {3464, "XX000",
-	  { {"xact.cpp", 4278}, {"xact.cpp", 4450}, {"xact.cpp", 4540}, 
+	  { {"xact.cpp", 4388}, {"xact.cpp", 4568}, {"xact.cpp", 4663}, 
 	 },
 },
 
 	  {3465, "25001",
-	  { {"xact.cpp", 4763}, },
+	  { {"xact.cpp", 4891}, },
 },
 
 	  {3466, "25001",
-	  { {"xact.cpp", 4768}, },
-},
-
-	  {3467, "25001",
-	  { {"xact.cpp", 4774}, },
-},
-
-	  {3468, "XX000",
-	  { {"xact.cpp", 4778}, },
+	  { {"xact.cpp", 4896}, },
 },
 
 	  {3469, "25P01",
-	  { {"xact.cpp", 4818}, },
+	  { {"xact.cpp", 4951}, },
 },
 
 	  {3470, "XX000",
-	  { {"xact.cpp", 5135}, },
+	  { {"xact.cpp", 5274}, },
 },
 
 	  {3471, "XX000",
-	  { {"xact.cpp", 5234}, {"xact.cpp", 5244}, {"xact.cpp", 5300}, 
-	 {"xact.cpp", 5308}, {"xact.cpp", 5350}, },
+	  { {"xact.cpp", 5376}, {"xact.cpp", 5387}, {"xact.cpp", 5454}, 
+	 {"xact.cpp", 5498}, },
 },
 
 	  {3472, "XX000",
-	  { {"xact.cpp", 5406}, {"xact.cpp", 5417}, {"xact.cpp", 5451}, 
-	 },
+	  { {"xact.cpp", 5604}, },
 },
 
 	  {3473, "XX000",
-	  { {"xact.cpp", 5504}, },
-},
-
-	  {3474, "3B001",
-	  { {"xact.cpp", 5543}, {"xact.cpp", 5587}, {"xact.cpp", 5592}, 
-	 {"xact.cpp", 5631}, {"xact.cpp", 5671}, {"xact.cpp", 5676}, 
-	 },
+	  { {"xact.cpp", 5658}, },
 },
 
 	  {3475, "XX000",
-	  { {"xact.cpp", 5572}, },
+	  { {"xact.cpp", 5729}, },
 },
 
 	  {3476, "XX000",
-	  { {"xact.cpp", 5656}, {"xact.cpp", 5695}, {"xact.cpp", 5708}, 
+	  { {"xact.cpp", 5822}, {"xact.cpp", 5868}, {"xact.cpp", 5882}, 
 	 },
 },
 
-	  {3477, "XX000",
-	  { {"xact.cpp", 5760}, },
-},
-
 	  {3478, "XX000",
-	  { {"xact.cpp", 5780}, },
-},
-
-	  {3479, "XX000",
-	  { {"xact.cpp", 5826}, },
+	  { {"xact.cpp", 5956}, },
 },
 
 	  {3480, "XX000",
-	  { {"xact.cpp", 6199}, },
-},
-
-	  {3481, "54000",
-	  { {"xact.cpp", 6667}, },
+	  { {"xact.cpp", 6398}, },
 },
 
 	  {3482, "XX000",
-	  { {"xact.cpp", 6731}, },
-},
-
-	  {3483, "XX000",
-	  { {"xact.cpp", 7418}, },
+	  { {"xact.cpp", 6968}, },
 },
 
 	  {3485, "XX000",
@@ -13650,43 +13596,12 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 	  {3736, "XX000",
 	  { {"ruleutils.cpp", 1261}, {"ruleutils.cpp", 11148}, {"catcache.cpp", 961}, 
 	 {"relcache.cpp", 5584}, {"allpaths.cpp", 1051}, {"createplan.cpp", 2278}, 
-	 {"planrewrite.cpp", 649}, {"pgxcship.cpp", 2856}, {"heapam.cpp", 1272}, 
-	 {"heapam.cpp", 1327}, },
-},
-
-	  {3737, "XX000",
-	  { {"heapam.cpp", 2243}, },
-},
-
-	  {3739, "XX000",
-	  { {"heapam.cpp", 4181}, {"heapam.cpp", 5175}, },
-},
-
-	  {3740, "XX000",
-	  { {"heapam.cpp", 4189}, {"heapam.cpp", 5183}, {"heapam.cpp", 5187}, 
-	 },
-},
-
-	  {3741, "XX000",
-	  { {"heapam.cpp", 4342}, },
+	 {"planrewrite.cpp", 649}, {"pgxcship.cpp", 2856}, },
 },
 
 	  {3742, "XX000",
 	  { {"trigger.cpp", 2669}, {"execMain.cpp", 2912}, {"nodeLockRows.cpp", 188}, 
-	 {"opfusion.cpp", 2222}, {"heapam.cpp", 5324}, },
-},
-
-	  {3743, "55P03",
-	  { {"heapam.cpp", 5383}, {"heapam.cpp", 5411}, {"heapam.cpp", 5443}, 
-	 },
-},
-
-	  {3744, "XX000",
-	  { {"heapam.cpp", 5729}, },
-},
-
-	  {3745, "XX000",
-	  { {"heapam.cpp", 5737}, },
+	 {"opfusion.cpp", 2222}, },
 },
 
 	  {3746, "XX000",
@@ -13734,20 +13649,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {3759, "XX000",
-	  { {"heapam.cpp", 7520}, },
-},
-
-	  {3760, "XX000",
-	  { {"heapam.cpp", 7542}, {"heapam.cpp", 7599}, {"heapam.cpp", 7699}, 
-	 },
-},
-
-	  {3761, "XX000",
-	  { {"heapam.cpp", 7590}, {"heapam.cpp", 7657}, },
-},
-
-	  {3762, "XX000",
-	  { {"heapam.cpp", 7688}, {"heapam.cpp", 7760}, },
+	  { {"heapam.cpp", 7956}, },
 },
 
 	  {3763, "XX000",
@@ -15573,10 +15475,6 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {4385, "XX000",
 	  { {"pgstatfuncs.cpp", 8666}, },
-},
-
-	  {4386, "XX000",
-	  { {"xact.cpp", 2886}, },
 },
 
 	  {4387, "0A000",
@@ -25118,7 +25016,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 	 {"postgres.cpp", 3278}, {"postgres.cpp", 3558}, {"postgres.cpp", 4297}, 
 	 {"postgres.cpp", 4795}, {"postgres.cpp", 5190}, {"postgres.cpp", 5260}, 
 	 {"postgres.cpp", 9557}, {"postgres.cpp", 10505}, {"lightProxy.cpp", 1116}, 
-	 {"heapam.cpp", 1259}, },
+	 {"heapam.cpp", 1320}, },
 },
 
 	  {6912, "XX005",
@@ -26685,7 +26583,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {7304, "D0011",
-	  { {"vecmodifytable.cpp", 825}, {"vectsstorescan.cpp", 367}, {"heapam.cpp", 2431}, 
+	  { {"vecmodifytable.cpp", 825}, {"vectsstorescan.cpp", 367}, {"heapam.cpp", 2534}, 
 	 },
 },
 
@@ -27493,76 +27391,16 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 	  { {"hbucket_am.cpp", 565}, {"hbucket_am.cpp", 574}, },
 },
 
-	  {7504, "XX000",
-	  { {"heapam.cpp", 2717}, },
-},
-
-	  {7505, "XX000",
-	  { {"heapam.cpp", 3145}, },
-},
-
-	  {7506, "XX000",
-	  { {"heapam.cpp", 3271}, },
-},
-
-	  {7507, "XX000",
-	  { {"heapam.cpp", 3855}, },
-},
-
-	  {7508, "40001",
-	  { {"heapam.cpp", 3875}, },
-},
-
-	  {7509, "40001",
-	  { {"heapam.cpp", 4065}, {"heapam.cpp", 6349}, },
-},
-
-	  {7510, "40001",
-	  { {"heapam.cpp", 4193}, },
-},
-
-	  {7511, "XX000",
-	  { {"heapam.cpp", 4321}, },
-},
-
-	  {7512, "40001",
-	  { {"heapam.cpp", 4347}, },
-},
-
-	  {7513, "0A000",
-	  { {"heapam.cpp", 4935}, },
-},
-
-	  {7514, "0A000",
-	  { {"heapam.cpp", 4952}, },
-},
-
-	  {7515, "55000",
-	  { {"heapam.cpp", 5167}, },
-},
-
-	  {7516, "XX001",
-	  { {"heapam.cpp", 6415}, },
-},
-
-	  {7517, "XX001",
-	  { {"heapam.cpp", 6892}, },
-},
-
 	  {7518, "XX000",
-	  { {"heapam.cpp", 7315}, },
+	  { {"heapam.cpp", 7750}, },
 },
 
 	  {7519, "XX000",
-	  { {"heapam.cpp", 7349}, },
+	  { {"heapam.cpp", 7783}, },
 },
 
 	  {7520, "XX000",
-	  { {"heapam.cpp", 7362}, },
-},
-
-	  {7521, "29P04",
-	  { {"heapam.cpp", 7574}, },
+	  { {"heapam.cpp", 7796}, },
 },
 
 	  {7522, "P0002",
@@ -28398,62 +28236,16 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 	  { {"varsup.cpp", 425}, },
 },
 
-	  {7730, "25000",
-	  { {"xact.cpp", 405}, },
-},
-
-	  {7731, "25000",
-	  { {"xact.cpp", 414}, },
-},
-
-	  {7732, "25000",
-	  { {"xact.cpp", 428}, },
-},
-
-	  {7733, "25000",
-	  { {"xact.cpp", 434}, },
-},
-
-	  {7734, "25000",
-	  { {"xact.cpp", 444}, },
-},
-
-	  {7735, "54000",
-	  { {"xact.cpp", 1352}, },
-},
-
-	  {7736, "25000",
-	  { {"xact.cpp", 3387}, },
-},
-
 	  {7737, "25000",
-	  { {"xact.cpp", 4732}, },
-},
-
-	  {7738, "25001",
-	  { {"xact.cpp", 5115}, },
-},
-
-	  {7739, "XX000",
-	  { {"xact.cpp", 5897}, },
-},
-
-	  {7740, "XX000",
-	  { {"xact.cpp", 5952}, },
-},
-
-	  {7741, "25000",
-	  { {"xact.cpp", 6023}, {"xact.cpp", 6050}, {"xact.cpp", 6077}, 
-	 {"xact.cpp", 6088}, {"xact.cpp", 6107}, {"xact.cpp", 6117}, 
-	 },
+	  { {"xact.cpp", 4861}, },
 },
 
 	  {7742, "XX000",
-	  { {"xact.cpp", 6344}, },
+	  { {"xact.cpp", 6550}, },
 },
 
 	  {7743, "DB010",
-	  { {"xact.cpp", 7449}, },
+	  { {"xact.cpp", 7722}, },
 },
 
 	  {7745, "XX000",

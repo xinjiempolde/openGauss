@@ -232,6 +232,7 @@ extern BulkInsertState GetBulkInsertState(void);
 extern void FreeBulkInsertState(BulkInsertState);
 
 extern Oid heap_insert(Relation relation, HeapTuple tup, CommandId cid, int options, BulkInsertState bistate);
+extern Oid LocalHeapInsert(Relation relation, HeapTuple tup, CommandId cid, int options, BulkInsertState bistate);
 extern void heap_abort_speculative(Relation relation, HeapTuple tuple);
 extern bool heap_page_prepare_for_xid(
     Relation relation, Buffer buffer, TransactionId xid, bool multi, bool pageReplication = false);
