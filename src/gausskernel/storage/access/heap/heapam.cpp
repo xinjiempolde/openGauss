@@ -8405,6 +8405,16 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
         NeuPrintLog("received storage push response, txn size is %d\n", push_response.txns_size());
         for (int i = 0; i < push_response.txns_size(); ++i) {
             const proto::Transaction& txn = push_response.txns(i);
+            // 对每一个Transaction都进行重放
+            StartTransactionCommand();
+            for (int row_idx = 0; row_idx < txn.row_size(); ++row_idx) {
+                const proto::Row &row = txn.row(row_idx);
+                const std::string &key = row.key();
+                const std::string &data = row.data();
+                NeuPrintLog("key is %s, data is %s", key.c_str(), data.c_str());
+                // 根据OpType进行对应的操作
+            }
+            CommitTransactionCommand();
         }
     } else {
         NeuPrintLog("undefined message type, it's not a valid Log Message\n");

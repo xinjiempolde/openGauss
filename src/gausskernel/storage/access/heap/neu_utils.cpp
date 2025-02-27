@@ -7,6 +7,9 @@
 
 #include "access/neu_utils/message.pb.h"
 #include "access/neu_utils/neu_utils.h"
+
+#include <orc_proto.pb.h>
+
 #include "access/neu_utils/snowflake_uid.h"
 #include "utils/elog.h"
 
@@ -117,7 +120,7 @@ void ApplyLogWorkerThreadMain() {
     zmq::socket_t listen_socket(context, ZMQ_SUB);
     // 记得初始化内存
     std::unique_ptr<zmq::message_t> zmq_message = std::make_unique<zmq::message_t>();
-    std::unique_ptr<proto::Message> log_message = std::make_unique<proto::Message>();
+    std::unique_ptr<proto::Message> log_message = nullptr;
     int zmq_queue_len = 0;
     bool proto_deserialize_result = false;
     listen_socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
@@ -126,6 +129,7 @@ void ApplyLogWorkerThreadMain() {
     fprintf(stderr, "connect to storage log service, address is %s\n", zmq_log_listen_addr.c_str());
     while (system_run_enable_.load()) {
         // ZeroMQ从5556端口接收数据(Apply Log)
+        log_message = std::make_unique<proto::Message>();
         listen_socket.recv(zmq_message.get());
         // fprintf(stderr, "received storage log from taas, data len is %lu\n", zmq_message->size());
 
@@ -145,13 +149,30 @@ void ApplyLogWorkerThreadMain() {
     }
 }
 
+std::string vformat_string(const char* format, va_list args) {
+    va_list args_copy;
+    va_copy(args_copy, args); // 复制va_list（因vsnprintf会消耗参数）
+
+    // 第一次调用获取所需长度
+    int len = vsnprintf(nullptr, 0, format, args_copy);
+    va_end(args_copy);
+
+    if (len <= 0) return ""; // 错误处理
+
+    // 预分配空间并格式化
+    std::string result(len, '\0');
+    vsnprintf(&result[0], len + 1, format, args); // C++11起合法
+    return result;
+}
+
 // 打印日志
 void NeuPrintLog(const char* format, ...) {
 #ifdef ENABLE_NEU_LOG
     va_list args;
     va_start(args, format);
-    ereport(LOG, (errmsg(format, args)));
+    std::string msg = vformat_string(format, args);
     va_end(args);
+    ereport(LOG, (errmsg("%s", msg.c_str())));
 #endif
 }
 
