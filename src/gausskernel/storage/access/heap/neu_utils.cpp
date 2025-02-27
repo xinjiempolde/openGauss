@@ -11,13 +11,17 @@
 #include "utils/elog.h"
 
 //=== NEU全局变量定义开始 ===//
-moodycamel::BlockingConcurrentQueue<std::unique_ptr<zmq::message_t>>
-transaction_message_queue_;
+
+// 用于存放将要发送的读写集
+moodycamel::BlockingConcurrentQueue<std::unique_ptr<zmq::message_t>> transaction_message_queue_;
+// 用于存放从5556端口接收的Apply Log
+moodycamel::BlockingConcurrentQueue<std::unique_ptr<proto::Message>> apply_log_message_queue_;
 std::string taas_ipv4_addr = "219.216.64.135";
 std::atomic<bool> system_run_enable_{true};
 // 用于缓存当前事务的读写集，线程私有变量，在CommitTransaction的时候才能确认所有的读写集收集完毕
 // 由于是线程私有变量，只有当前线程能够插入数据，所以不用考虑线程并发问题，是线程安全的
 thread_local std::vector<std::unique_ptr<proto::Row>> ReadWriteSetInTxn_{};
+// 使用SnowFlake算法生成分布式UID
 SnowflakeDistributeID uid_generator_{1, 1};
 // TODO(singheart):这么做并发hashmap可能有性能问题
 // 每个事务都对应一个条件变量，当CommitTransaction的时候，在自己的条件变量上等待
@@ -29,8 +33,7 @@ std::unordered_map<TransactionId, std::shared_ptr<NeuTransactionManager>> cv_map
 // 将事务(或者说读写集)发送给TaaS
 void SendWorkerThreadMain() {
     std::string zmq_remote_port = "5551";
-    std::string zmq_remote_addr =
-        "tcp://" + taas_ipv4_addr + ":" + zmq_remote_port;
+    std::string zmq_remote_addr = "tcp://" + taas_ipv4_addr + ":" + zmq_remote_port;
     zmq::context_t context(1);
     zmq::socket_t send_socket(context, ZMQ_PUSH);
     zmq::send_flags zmq_flags(zmq::send_flags::none);
@@ -56,8 +59,7 @@ void ResponseWorkerThreadMain() {
     int zmq_queue_len = 0;
     bool protobuf_deserialize_result;
     proto::Message taas_result_message;
-    std::unique_ptr<zmq::message_t> zmq_message = std::make_unique<
-        zmq::message_t>();
+    std::unique_ptr<zmq::message_t> zmq_message = std::make_unique<zmq::message_t>();
     listen_socket.setsockopt(ZMQ_RCVHWM, &zmq_queue_len, sizeof(zmq_queue_len));
     listen_socket.bind(zmq_bind_addr);
     fprintf(stderr, "bind address %s\n", zmq_bind_addr.c_str());
@@ -82,14 +84,19 @@ void ResponseWorkerThreadMain() {
                 NeuPrintLog("failed to find xid: %lu", xid);
                 continue;
             }
-            // 找到了当前的TransactionID
+
+            // 找到了当前的TransactionID，设置NeuTransactionManager的相关状态
             auto txn_manager = txn_manager_iter->second;
             if (reply_result.txn_state() == proto::Commit) {
                 txn_manager->txn_state_ = STATE_COMMIT;
             } else if (reply_result.txn_state() == proto::Abort) {
                 txn_manager->txn_state_ = STATE_ABORT;
             }
+
+            // 唤醒之前阻塞的事务
             txn_manager->cv_.notify_all();
+
+            // TODO(singheart)：别忘记放锁，可用guard_lock替换？
             cv_mutex_.unlock();
             if (reply_result.txn_state() == proto::TxnState::Commit) {
                 fprintf(stderr, "tell me commit\n");
@@ -97,6 +104,7 @@ void ResponseWorkerThreadMain() {
                 fprintf(stderr, "opps, abort\n");
             }
         }
+        // TODO(singheart): Delete this
         std::this_thread::sleep_for(std::chrono::microseconds(20));
     }
 }
@@ -117,25 +125,22 @@ void ApplyLogWorkerThreadMain() {
     listen_socket.connect(zmq_log_listen_addr);
     fprintf(stderr, "connect to storage log service, address is %s\n", zmq_log_listen_addr.c_str());
     while (system_run_enable_.load()) {
+        // ZeroMQ从5556端口接收数据(Apply Log)
         listen_socket.recv(zmq_message.get());
         // fprintf(stderr, "received storage log from taas, data len is %lu\n", zmq_message->size());
+
         // 使用protobuf反序列化
         google::protobuf::io::ArrayInputStream input_stream(zmq_message->data(), zmq_message->size());
         proto_deserialize_result = log_message->ParseFromZeroCopyStream(&input_stream);
         if (!proto_deserialize_result) {
-            fprintf(stderr, "failed to deserialize log message from taas\n");
+            NeuPrintLog("failed to deserialize log message from taas\n");
             system_run_enable_.store(false);
         }
-        if (log_message->type_case() == proto::Message::TypeCase::kStoragePullResponse) {
-            fprintf(stderr, "received storage pull response\n");
-        } else if (log_message->type_case() == proto::Message::TypeCase::kStoragePushResponse) {
-            const proto::StoragePushResponse& push_response = log_message->storage_push_response();
-            fprintf(stderr, "received storage push response, txn size is %d\n", push_response.txns_size());
-            for (int i = 0; i < push_response.txns_size(); ++i) {
-                const proto::Transaction& txn = push_response.txns(i);
-                // fprintf(stderr, "txn csn is %lu", txn.csn());
-            }
-        } else {}
+
+        // 将日志重放
+        ApplyWriteSet(std::move(log_message));
+
+        // TODO(singheart): Delete this
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 }
@@ -159,17 +164,14 @@ uint64_t AllocateUniqueKey() {
 std::string GetIPV4Address() {
     struct ifaddrs *ifaddr, *ifa;
     static std::string ip(INET_ADDRSTRLEN, '\0');
-    if (ip[0] != '\0')
-        return ip;
-    if (getifaddrs(&ifaddr) == -1)
-        return "";
+    if (ip[0] != '\0') return ip;
+    if (getifaddrs(&ifaddr) == -1) return "";
     for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
         if (ifa->ifa_addr == NULL) continue;
         if (ifa->ifa_addr->sa_family == AF_INET) {
             void* addr = &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr;
             inet_ntop(AF_INET, addr, const_cast<char*>(ip.c_str()), INET_ADDRSTRLEN);
-            if (strcmp(ifa->ifa_name, "ens8f0") == 0)
-                break;
+            if (strcmp(ifa->ifa_name, "ens8f0") == 0) break;
         }
     }
     freeifaddrs(ifaddr);

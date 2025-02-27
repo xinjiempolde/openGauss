@@ -27,6 +27,7 @@ public:
 };
 
 extern moodycamel::BlockingConcurrentQueue<std::unique_ptr<zmq::message_t>> transaction_message_queue_;
+extern moodycamel::BlockingConcurrentQueue<std::unique_ptr<proto::Message>> apply_log_message_queue_;
 extern std::string taas_ipv4_addr;
 extern thread_local std::vector<std::unique_ptr<proto::Row>> ReadWriteSetInTxn_;
 extern std::mutex cv_mutex_;
@@ -38,4 +39,5 @@ void SendWorkerThreadMain();
 void ResponseWorkerThreadMain();
 void ApplyLogWorkerThreadMain();
 std::string GetIPV4Address();
+bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message);
 #endif //NEU_UTILS_H

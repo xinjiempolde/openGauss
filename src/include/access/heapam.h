@@ -243,9 +243,14 @@ extern int heap_multi_insert(Relation relation, Relation parent, HeapTuple* tupl
     BulkInsertState bistate, HeapMultiInsertExtraArgs* args);
 extern TM_Result heap_delete(Relation relation, ItemPointer tid, CommandId cid, Snapshot crosscheck, 
     bool wait, TM_FailureData *tmfd, bool allow_delete_self = false);
+
 extern TM_Result heap_update(Relation relation, Relation parentRelation, ItemPointer otid, HeapTuple newtup,
     CommandId cid, Snapshot crosscheck, bool wait, TM_FailureData *tmfd, bool allow_delete_self = false);
-extern TM_Result heap_lock_tuple(Relation relation, HeapTuple tuple, Buffer* buffer, 
+extern TM_Result LocalHeapUpdate(Relation relation, Relation parentRelation, ItemPointer otid, HeapTuple newtup,
+    CommandId cid, Snapshot crosscheck, bool wait, TM_FailureData *tmfd, bool allow_delete_self = false);
+extern bool ApplyWriteSet();
+
+extern TM_Result heap_lock_tuple(Relation relation, HeapTuple tuple, Buffer* buffer,
     CommandId cid, LockTupleMode mode, bool nowait, TM_FailureData *tmfd, bool allow_lock_self = false);
 
 extern void heap_inplace_update(Relation relation, HeapTuple tuple);

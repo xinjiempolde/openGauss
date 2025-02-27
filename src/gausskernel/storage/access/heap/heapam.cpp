@@ -4501,7 +4501,7 @@ void simple_heap_delete(Relation relation, ItemPointer tid, int options) {
  * tuple was updated, and t_ctid is the location of the replacement tuple.
  * (t_xmax is needed to verify that the replacement tuple matches.)
  */
-TM_Result heap_update(Relation relation, Relation parentRelation,
+TM_Result LocalHeapUpdate(Relation relation, Relation parentRelation,
                       ItemPointer otid, HeapTuple newtup,
                       CommandId cid, Snapshot crosscheck, bool wait,
                       TM_FailureData* tmfd, bool allow_update_self) {
@@ -5133,6 +5133,13 @@ l2:
     bms_free(id_attrs);
 
     return TM_Ok;
+}
+
+TM_Result heap_update(Relation relation, Relation parentRelation, ItemPointer otid, HeapTuple newtup,
+    CommandId cid, Snapshot crosscheck, bool wait, TM_FailureData *tmfd, bool allow_delete_self) {
+
+    InsertLocalSet(relation, newtup, otid, proto::Update);
+    return LocalHeapUpdate(relation, parentRelation, otid, newtup, cid, crosscheck, wait, tmfd, allow_delete_self) ;
 }
 
 static XLogRecPtr log_heap_new_cid_insert(xl_heap_new_cid* xlrec) {
@@ -8386,4 +8393,20 @@ HeapTuple heapam_index_fetch_tuple(IndexScanDesc scan, bool* all_dead) {
     scan->xs_continue_hot = false;
 
     return NULL;
+}
+
+// 将TaaS发过来(5556端口)的日志重放，即数据落盘
+bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
+    // TODO(singheart): PULL的情况没有进行处理
+    if (log_message->type_case() == proto::Message::TypeCase::kStoragePullResponse) {
+        fprintf(stderr, "received storage pull response\n");
+    } else if (log_message->type_case() == proto::Message::TypeCase::kStoragePushResponse) {
+        const proto::StoragePushResponse& push_response = log_message->storage_push_response();
+        NeuPrintLog("received storage push response, txn size is %d\n", push_response.txns_size());
+        for (int i = 0; i < push_response.txns_size(); ++i) {
+            const proto::Transaction& txn = push_response.txns(i);
+        }
+    } else {
+        NeuPrintLog("undefined message type, it's not a valid Log Message\n");
+    }
 }

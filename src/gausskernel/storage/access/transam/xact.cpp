@@ -2936,30 +2936,42 @@ static void CommitTransaction(bool STP_commit) {
     // add by singheart
     // 将所有内存中的读写集放到发送队列中，等待TaaS从5552端口发来的结果
     if (IsTransactionBlock()) {
+        // 将之前所有的读写集组装成protobuf的格式
         TransactionId xid = GetCurrentTransactionId();
         std::unique_ptr<std::string> serialized_txn_ptr = std::make_unique<std::string>();
         std::unique_ptr<proto::Message> message = std::make_unique<proto::Message>();
         proto::Transaction* txn = message->mutable_txn();
         auto* rows = txn->mutable_row();
         for (auto& row : ReadWriteSetInTxn_) {
-            rows->AddAllocated(row.get());
             fprintf(stderr, "key is %s, values is %s", row->key().c_str(), row->data().c_str());
+            rows->AddAllocated(row.release());
         }
         txn->set_client_ip(GetIPV4Address());
         txn->set_client_txn_id(xid);
+        txn->set_storage_type("mot");
+
+        // 将protobuf格式的数据序列化，变成zmq::message_t的格式，并放到发送队列中
         google::protobuf::io::StringOutputStream output_stream(serialized_txn_ptr.get());
         bool protobuf_serialize_result = message->SerializeToZeroCopyStream(&output_stream);
         assert(protobuf_serialize_result);
         auto zmq_message = std::make_unique<zmq::message_t>(serialized_txn_ptr->data(), serialized_txn_ptr->size());
         transaction_message_queue_.enqueue(std::move(zmq_message));
+
+        // 阻塞该事务，直到TaaS发来该事务的反馈
         std::unique_lock<std::mutex> lock(cv_mutex_);
         std::shared_ptr<NeuTransactionManager> txn_manager = std::make_shared<NeuTransactionManager>();
         cv_map_[xid] = txn_manager;
         txn_manager->cv_.wait(lock, [&]{ return txn_manager->txn_state_ != STATE_INVALID; });
-        fprintf(stderr, "transaction %lu wake up, txn state is %d\n", xid, txn_manager->txn_state_);
+
+        // 在此收到了TaaS的反馈，根据反馈的事务状态做相应的处理
+        NeuPrintLog("transaction %lu wake up, txn state is %d\n", xid, txn_manager->txn_state_);
         if (txn_manager->txn_state_ == STATE_ABORT) {
             ereport(ERROR, (errmsg("Transaction %lu abort, told by TaaS\n", xid)));
         }
+
+        // 重置该事务的相关状态
+        ReadWriteSetInTxn_.clear();
+        txn_manager->txn_state_ = STATE_INVALID;
     }
 
     /* Prevent cancel/die interrupt while cleaning up */
