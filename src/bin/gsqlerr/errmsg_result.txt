@@ -90,49 +90,55 @@ CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08277: "a non-exclusive backup is already in progress in this session"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08278: "a backup is already in progress in this session"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08279: "non-exclusive backup in progress"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08280: "non-exclusive backup is not in progress"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08281: "DRS_sender could not connect to the remote server, we have tried %d times, the connection info :%s : %s"
+GAUSS-08277: "Transaction %lu abort, told by TaaS\n"
 SQLSTATE: 
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08282: "could not send replication command '%s': %s\n"
+GAUSS-08278: "a non-exclusive backup is already in progress in this session"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08279: "a backup is already in progress in this session"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08280: "non-exclusive backup in progress"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08281: "non-exclusive backup is not in progress"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08282: "DRS_sender could not connect to the remote server, we have tried %d times, the connection info :%s : %s"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08283: "could not send replication command '%s': %s\n"
 SQLSTATE: 29000
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08283: "invalid target wal lsn while advancing logical replication restart lsn."
+GAUSS-08284: "invalid target wal lsn while advancing logical replication restart lsn."
 SQLSTATE: 22023
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08284: "terminating Walsender process due to replication timeout."
+GAUSS-08285: "terminating Walsender process due to replication timeout."
 SQLSTATE: 
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
@@ -6022,57 +6028,63 @@ CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08277: "a non-exclusive backup is already in progress in this session"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08278: "a backup is already in progress in this session"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08279: "non-exclusive backup in progress"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08280: "non-exclusive backup is not in progress"
-SQLSTATE: 55000
-CAUSE: "This is an internal error"
-ACTION: "Please contact engineer to support."
-
-
-GAUSS-08281: "DRS_sender could not connect to the remote server, we have tried %d times, the connection info :%s : %s"
+GAUSS-08277: "Transaction %lu abort, told by TaaS\n"
 SQLSTATE: 
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08282: "could not send replication command '%s': %s\n"
+GAUSS-08278: "a non-exclusive backup is already in progress in this session"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08279: "a backup is already in progress in this session"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08280: "non-exclusive backup in progress"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08281: "non-exclusive backup is not in progress"
+SQLSTATE: 55000
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08282: "DRS_sender could not connect to the remote server, we have tried %d times, the connection info :%s : %s"
+SQLSTATE: 
+CAUSE: "This is an internal error"
+ACTION: "Please contact engineer to support."
+
+
+GAUSS-08283: "could not send replication command '%s': %s\n"
 SQLSTATE: 29000
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08283: "invalid target wal lsn while advancing logical replication restart lsn."
+GAUSS-08284: "invalid target wal lsn while advancing logical replication restart lsn."
 SQLSTATE: 22023
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
-GAUSS-08284: "terminating Walsender process due to replication timeout."
+GAUSS-08285: "terminating Walsender process due to replication timeout."
 SQLSTATE: 
 CAUSE: "This is an internal error"
 ACTION: "Please contact engineer to support."
 
 
 /********************SUMMARY******************/
-Insert ErrorMsg Num: 23
+Insert ErrorMsg Num: 24
 Delete ErrorMsg Num: 84
-Incomplete ErrorMsg Num: 904
+Incomplete ErrorMsg Num: 905
 ErrorMsg Num before Make: 7302
-ErrorMsg Num after  Make: 7241
+ErrorMsg Num after  Make: 7242

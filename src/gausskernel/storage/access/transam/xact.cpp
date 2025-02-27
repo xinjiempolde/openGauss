@@ -2946,6 +2946,7 @@ static void CommitTransaction(bool STP_commit) {
             fprintf(stderr, "key is %s, values is %s", row->key().c_str(), row->data().c_str());
         }
         txn->set_client_ip(GetIPV4Address());
+        txn->set_client_txn_id(xid);
         google::protobuf::io::StringOutputStream output_stream(serialized_txn_ptr.get());
         bool protobuf_serialize_result = message->SerializeToZeroCopyStream(&output_stream);
         assert(protobuf_serialize_result);
@@ -2955,6 +2956,10 @@ static void CommitTransaction(bool STP_commit) {
         std::shared_ptr<NeuTransactionManager> txn_manager = std::make_shared<NeuTransactionManager>();
         cv_map_[xid] = txn_manager;
         txn_manager->cv_.wait(lock, [&]{ return txn_manager->txn_state_ != STATE_INVALID; });
+        fprintf(stderr, "transaction %lu wake up, txn state is %d\n", xid, txn_manager->txn_state_);
+        if (txn_manager->txn_state_ == STATE_ABORT) {
+            ereport(ERROR, (errmsg("Transaction %lu abort, told by TaaS\n", xid)));
+        }
     }
 
     /* Prevent cancel/die interrupt while cleaning up */

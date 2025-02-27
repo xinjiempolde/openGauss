@@ -1,4 +1,4 @@
---start time: 2025-02-27 16:32:07  
+--start time: 2025-02-27 16:45:56  
 FUNC:[readErrmsgFile] LINE[1422]: process readErrmsgFile success.
 Scan and process file:/home/singheart/openGauss/src/common/backend/parser/hint_scan.l success.
 Scan and process file:/home/singheart/openGauss/src/common/backend/parser/scan.l success.
@@ -1292,8 +1292,8 @@ file /home/singheart/openGauss/src/bin/gsqlerr/errmsg.h exist.
 file /home/singheart/openGauss/src/bin/gsqlerr/gsqlerr_errmsg.h exist.
 
 ===========================================================================================================================
- 23 errmsg insert, 84 errmsg delete, 904 errmsg incomplete. 
- 7302 errmsg before make check, 7241 errmsg after make check. 
+ 24 errmsg insert, 84 errmsg delete, 905 errmsg incomplete. 
+ 7302 errmsg before make check, 7242 errmsg after make check. 
 ===========================================================================================================================
 
 The change of the error message in current version can be view in the file "/home/singheart/openGauss/src/bin/gsqlerr/errmsg_result.txt". 
