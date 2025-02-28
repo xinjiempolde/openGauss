@@ -8446,9 +8446,14 @@ HeapTuple ConstructHeapTupleFromProto(Relation relation, const proto::Row &proto
         int column_len = attributes[column_index]->attlen;
         const proto::Column &column = proto_row.column(column_index);
         // TODO(singheart): 判断当前列的值是否为NULL
-        if (column_len > 0 && column_len <= 8) {  // 定长类型
+        isnull[column_index] = false;
+        if (column_len == 4) {  // 定长类型
+            data[column_index] = *(int32 *)column.value().c_str();
+        } else if (column_len == 8) {  // 定长类型
+            data[column_index] = *(int64 *)column.value().c_str();
         } else if (column_len == -1 || column_len > 8) {  // 变长类型或者原生字符串类型
             column_len = static_cast<int>(column.ByteSizeLong());
+            // 设置可变字符串头部长度
             SET_VARSIZE(var_buf, column_len + VARHDRSZ);
             memcpy(VARDATA(var_buf), column.value().c_str(), column_len);
             data[column_index] = PointerGetDatum(var_buf);
