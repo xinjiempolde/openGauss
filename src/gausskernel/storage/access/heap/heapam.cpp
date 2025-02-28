@@ -2768,6 +2768,9 @@ Oid LocalHeapInsert(Relation relation, HeapTuple tup, CommandId cid,
 
 // 将读写集先放到本地内存中
 void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::OpType type) {
+    if (relation == nullptr) {
+        NeuPrintLog("relation is nullptr\n");
+    }
     // 将Tuple转换为protobuf格式并插入到发送队列中
     Datum datum[MaxTupleAttributeNumber];
     bool isnull[MaxTupleAttributeNumber];
@@ -2812,7 +2815,7 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
     } else if (type == proto::Delete) {
         number_key = tid_translator_.GetKeyWithTid(relation->rd_id, *otid);
     } else if (type == proto::Read) {
-
+        number_key = tid_translator_.GetKeyWithTid(relation->rd_id, *otid);
     }
     std::string key = std::to_string(number_key);
     single_row->set_key(key.c_str());

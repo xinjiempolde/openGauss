@@ -17,6 +17,8 @@
  *
  * -------------------------------------------------------------------------
  */
+#include "access/neu_utils/neu_utils.h"
+
 #include "postgres.h"
 #include "knl/knl_variable.h"
 
@@ -31,8 +33,9 @@
  * inside an EvalPlanQual recheck.	If we aren't, just execute
  * the access method's next-tuple routine.
  */
-static TupleTableSlot* ExecScanFetch(ScanState* node, ExecScanAccessMtd access_mtd, ExecScanRecheckMtd recheck_mtd)
-{
+static TupleTableSlot* ExecScanFetch(ScanState* node,
+                                     ExecScanAccessMtd access_mtd,
+                                     ExecScanRecheckMtd recheck_mtd) {
     EState* estate = node->ps.state;
 
     if (estate->es_epqTuple != NULL) {
@@ -58,7 +61,8 @@ static TupleTableSlot* ExecScanFetch(ScanState* node, ExecScanAccessMtd access_m
                 return ExecClearTuple(slot);
 
             /* Store test tuple in the plan node's scan slot */
-            (void)ExecStoreTuple(estate->es_epqTuple[scan_rel_id - 1], slot, InvalidBuffer, false);
+            (void)ExecStoreTuple(estate->es_epqTuple[scan_rel_id - 1], slot,
+                                 InvalidBuffer, false);
 
             /* Check if it meets the access-method conditions */
             if (!(*recheck_mtd)(node, slot))
@@ -74,6 +78,8 @@ static TupleTableSlot* ExecScanFetch(ScanState* node, ExecScanAccessMtd access_m
     return (*access_mtd)(node);
 }
 
+extern void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid,
+                           proto::OpType type);
 /* ----------------------------------------------------------------
  *		ExecScan
  *
@@ -96,9 +102,9 @@ static TupleTableSlot* ExecScanFetch(ScanState* node, ExecScanAccessMtd access_m
  *			 "cursor" is positioned before the first qualifying tuple.
  * ----------------------------------------------------------------
  */
-TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd, /* function returning a tuple */
-    ExecScanRecheckMtd recheck_mtd)
-{
+TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd,
+                         /* function returning a tuple */
+                         ExecScanRecheckMtd recheck_mtd) {
     ExprContext* econtext = NULL;
     List* qual = NIL;
     ProjectionInfo* proj_info = NULL;
@@ -195,6 +201,14 @@ TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd, /* funct
             /*
              * Found a satisfactory scan tuple.
              */
+            // add by singheart
+            // 找到了满足条件的tuple，已经是过滤后的读集，收集！
+            if (IsTransactionBlock()) {
+                Relation relation = node->ss_currentRelation;
+                HeapTuple heap_tuple = (HeapTuple)slot->tts_tuple;
+                InsertLocalSet(relation, heap_tuple, &heap_tuple->t_self, proto::Read);
+            }
+
             if (proj_info != NULL) {
                 /*
                  * Form a projection tuple, store it in the result tuple slot
@@ -214,7 +228,8 @@ TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd, /* funct
                      * Optimize foreign scan by using informational constraint.
                      */
                     if (IsA(node->ps.plan, ForeignScan)) {
-                        ForeignScan* foreign_scan = (ForeignScan*)(node->ps.plan);
+                        ForeignScan* foreign_scan = (ForeignScan*)(node->ps.
+                            plan);
                         if (foreign_scan->scan.scan_qual_optimized) {
                             /*
                              * If we find a suitable tuple, set is_scan_end value is true.
@@ -224,6 +239,7 @@ TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd, /* funct
                             node->is_scan_end = true;
                         }
                     }
+                    // 带有project的查询，比如select id from stu where id > 8;(而不是select *)
                     return result_slot;
                 }
             } else {
@@ -244,6 +260,7 @@ TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd, /* funct
                 /*
                  * Here, we aren't projecting, so just return scan tuple.
                  */
+                // 不带project的查询，应该就是select *?
                 return slot;
             }
         } else
@@ -269,8 +286,7 @@ TupleTableSlot* ExecScan(ScanState* node, ExecScanAccessMtd access_mtd, /* funct
  *
  * ExecAssignScanType must have been called already.
  */
-void ExecAssignScanProjectionInfo(ScanState* node)
-{
+void ExecAssignScanProjectionInfo(ScanState* node) {
     Scan* scan = (Scan*)node->ps.plan;
     Index var_no;
 
@@ -280,10 +296,12 @@ void ExecAssignScanProjectionInfo(ScanState* node)
     else
         var_no = scan->scanrelid;
 
-    if (tlist_matches_tupdesc(&node->ps, scan->plan.targetlist, var_no, node->ss_ScanTupleSlot->tts_tupleDescriptor))
+    if (tlist_matches_tupdesc(&node->ps, scan->plan.targetlist, var_no,
+                              node->ss_ScanTupleSlot->tts_tupleDescriptor))
         node->ps.ps_ProjInfo = NULL;
     else
-        ExecAssignProjectionInfo(&node->ps, node->ss_ScanTupleSlot->tts_tupleDescriptor);
+        ExecAssignProjectionInfo(&node->ps,
+                                 node->ss_ScanTupleSlot->tts_tupleDescriptor);
 }
 
 /*
@@ -293,18 +311,19 @@ void ExecAssignScanProjectionInfo(ScanState* node)
  * Usually the caller provides a targetlist describing the scan tuples, so we can
  * avoid a projection step by setting ps_ProjInfo to NULL. Such as "SELECT * FROM ...".
  */
-void ExecAssignScanProjectionInfoWithVarno(ScanState* node, Index var_no)
-{
+void ExecAssignScanProjectionInfoWithVarno(ScanState* node, Index var_no) {
     Scan* scan = (Scan*)node->ps.plan;
 
-    if (tlist_matches_tupdesc(&node->ps, scan->plan.targetlist, var_no, node->ss_ScanTupleSlot->tts_tupleDescriptor))
+    if (tlist_matches_tupdesc(&node->ps, scan->plan.targetlist, var_no,
+                              node->ss_ScanTupleSlot->tts_tupleDescriptor))
         node->ps.ps_ProjInfo = NULL;
     else
-        ExecAssignProjectionInfo(&node->ps, node->ss_ScanTupleSlot->tts_tupleDescriptor);
+        ExecAssignProjectionInfo(&node->ps,
+                                 node->ss_ScanTupleSlot->tts_tupleDescriptor);
 }
 
-bool tlist_matches_tupdesc(PlanState* ps, List* tlist, Index var_no, TupleDesc tup_desc)
-{
+bool tlist_matches_tupdesc(PlanState* ps, List* tlist, Index var_no,
+                           TupleDesc tup_desc) {
     int num_attrs = tup_desc->natts;
     int attr_no;
     bool has_oid = false;
@@ -338,7 +357,8 @@ bool tlist_matches_tupdesc(PlanState* ps, List* tlist, Index var_no, TupleDesc t
          * projection steps just to convert from specific typmod to typmod -1,
          * which is pretty silly.
          */
-        if (var->vartype != att_tup->atttypid || (var->vartypmod != att_tup->atttypmod && var->vartypmod != -1))
+        if (var->vartype != att_tup->atttypid || (
+                var->vartypmod != att_tup->atttypmod && var->vartypmod != -1))
             return false; /* type mismatch */
 
         tlist_item = lnext(tlist_item);
@@ -363,8 +383,7 @@ bool tlist_matches_tupdesc(PlanState* ps, List* tlist, Index var_no, TupleDesc t
  * This must be called within the ReScan function of any plan node type
  * that uses ExecScan().
  */
-void ExecScanReScan(ScanState* node)
-{
+void ExecScanReScan(ScanState* node) {
     EState* estate = node->ps.state;
 
     /* Stop projecting any tuples from SRFs in the targetlist */
