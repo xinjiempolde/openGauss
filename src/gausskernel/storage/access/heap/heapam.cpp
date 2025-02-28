@@ -2802,8 +2802,20 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
             break;
         }
     }
-    // TODO(singheart): set key and value
-    std::string key = std::to_string(AllocateUniqueKey());
+
+    // 设置UniqueKey和TID的映射关系
+    UniqueKey number_key = 0;
+    if (type == proto::Insert) {
+        number_key = AllocateUniqueKey();
+        tid_translator_.InsertKeyAndTid(relation->rd_id, number_key, *otid);
+    } else if (type == proto::Update) {
+        number_key = tid_translator_.GetKeyWithTid(relation->rd_id, *otid);
+    } else if (type == proto::Delete) {
+        number_key = tid_translator_.GetKeyWithTid(relation->rd_id, *otid);
+    } else if (type == proto::Read) {
+
+    }
+    std::string key = std::to_string(number_key);
     single_row->set_key(key.c_str());
     single_row->set_data("useless data");
     // TODO(singheat): 可采用OID而不是表名，一是网络传输开销更小，二是省去了根据table_name查看tableoid的过程
@@ -5166,7 +5178,9 @@ TM_Result heap_update(Relation relation, Relation parentRelation, ItemPointer ot
     CommandId cid, Snapshot crosscheck, bool wait, TM_FailureData *tmfd, bool allow_delete_self) {
 
     InsertLocalSet(relation, newtup, otid, proto::Update);
-    return LocalHeapUpdate(relation, parentRelation, otid, newtup, cid, crosscheck, wait, tmfd, allow_delete_self) ;
+    // TODO(singheart): rethink this
+    return TM_Ok;
+    // return LocalHeapUpdate(relation, parentRelation, otid, newtup, cid, crosscheck, wait, tmfd, allow_delete_self) ;
 }
 
 static XLogRecPtr log_heap_new_cid_insert(xl_heap_new_cid* xlrec) {
@@ -8491,6 +8505,7 @@ Relation OpenTableByName(const char * table_name, LOCKMODE mode) {
 
 // 将TaaS发过来(5556端口)的日志重放，即数据落盘
 bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
+    TM_FailureData tmfd;
     // TODO(singheart): PULL的情况没有进行处理
     if (log_message->type_case() == proto::Message::TypeCase::kStoragePullResponse) {
         fprintf(stderr, "received storage pull response\n");
@@ -8507,8 +8522,10 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
                 HeapTuple heap_tuple = ConstructHeapTupleFromProto(rel, row);
                 // 根据OpType进行不同的操作
                 if (row.op_type() == proto::Insert) {
-                    Oid oid = LocalHeapInsert(rel, heap_tuple, GetCurrentCommandId(true), 0, nullptr);
+                    LocalHeapInsert(rel, heap_tuple, GetCurrentCommandId(true), 0, nullptr);
                 } else if (row.op_type() == proto::Update) {
+                    ItemPointerData tid = tid_translator_.GetTidWithKey(rel->rd_id, std::stoull(row.key()));
+                    LocalHeapUpdate(rel, nullptr, &tid, heap_tuple, GetCurrentCommandId(true), InvalidSnapshot, true, &tmfd);
                 } else if (row.op_type() == proto::Delete) {
                 } else if (row.op_type() == proto::Read) {
                 }

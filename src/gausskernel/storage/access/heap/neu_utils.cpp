@@ -8,6 +8,8 @@
 #include "access/neu_utils/message.pb.h"
 #include "access/neu_utils/neu_utils.h"
 
+#include <storage/item/itemptr.h>
+
 #include "access/neu_utils/snowflake_uid.h"
 #include "utils/elog.h"
 
@@ -29,6 +31,9 @@ SnowflakeDistributeID uid_generator_{1, 1};
 // 直到TaaS从5552端口将结果返回，调用notify_all唤醒阻塞的事务，继续完成Commit操作
 std::mutex cv_mutex_;
 std::unordered_map<TransactionId, std::shared_ptr<NeuTransactionManager>> cv_map_;
+// 用于记录主键到RID的映射
+// TODO(singheart): 后续应考虑持久化的问题
+KeyAndTidTranslator tid_translator_;
 //=== NEU全局变量定义结束 ===//
 
 // 将事务(或者说读写集)发送给TaaS
@@ -176,7 +181,7 @@ void NeuPrintLog(const char* format, ...) {
 }
 
 // 使用SnowFlake算法分配分布式全局位移的UID
-uint64_t AllocateUniqueKey() {
+UniqueKey AllocateUniqueKey() {
     return uid_generator_.NextID();
 }
 
