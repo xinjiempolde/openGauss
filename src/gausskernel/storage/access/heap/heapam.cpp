@@ -8423,20 +8423,23 @@ HeapTuple heapam_index_fetch_tuple(IndexScanDesc scan, bool* all_dead) {
 }
 
 // 将protobuf格式的Row转换为openGaus内部的HeapTuple
-HeapTuple ConstructHeapTupleFromProto(const proto::Row &proto_row) {
+HeapTuple ConstructHeapTupleFromProto(Relation relation, const proto::Row &proto_row) {
     const std::string &key = proto_row.key();
     int relation_column_nums;
     Oid table_oid;
-    Relation relation;
     Form_pg_attribute* attributes;
     TM_FailureData tmfd;
     struct varlena* var_buf;
     Datum data[MaxTupleAttributeNumber];
     bool isnull[MaxTupleAttributeNumber];
 
+    if (relation == nullptr) {
+        NeuPrintLog("relation is not valid. Cannot construct tuple from protobuf\n");
+        return nullptr;
+    }
+
     // TODO(singheart): 如果字符串很长，可能会超出空间
     var_buf = (struct varlena *)palloc(VARHDRSZ + 4096);
-    relation = heap_open(table_oid, AccessShareLock);
     relation_column_nums = relation->rd_att->natts;
     attributes = relation->rd_att->attrs;
     for (int column_index = 0; column_index < relation_column_nums; ++column_index) {
@@ -8457,6 +8460,7 @@ HeapTuple ConstructHeapTupleFromProto(const proto::Row &proto_row) {
     return tuple;
 }
 
+// 根据关系表的表名查找关系表OID
 Oid GetTableOidByName(const char *table_name) {
     if (!table_name) {
         return InvalidOid;
@@ -8468,6 +8472,8 @@ Oid GetTableOidByName(const char *table_name) {
     }
     return table_oid;
 }
+
+// 通过关系表的表名打开关系表，并返回Relation格式
 Relation OpenTableByName(const char * table_name, LOCKMODE mode) {
     Relation rel;
     Oid table_oid = GetTableOidByName(table_name);
@@ -8493,7 +8499,7 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
             for (int row_index = 0; row_index < txn.row_size(); ++row_index) {
                 const proto::Row &row = txn.row(row_index);
                 Relation rel = OpenTableByName(row.table_name().c_str());
-                HeapTuple heap_tuple = ConstructHeapTupleFromProto(row);
+                HeapTuple heap_tuple = ConstructHeapTupleFromProto(rel, row);
                 // 根据OpType进行不同的操作
                 if (row.op_type() == proto::Insert) {
                     Oid oid = LocalHeapInsert(rel, heap_tuple, GetCurrentCommandId(true), 0, nullptr);
