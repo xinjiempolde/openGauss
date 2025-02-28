@@ -64,6 +64,7 @@
 #include "executor/nodeModifyTable.h"
 #include "miscadmin.h"
 #include "pgstat.h"
+#include "postgres.h"
 #include "replication/dataqueue.h"
 #include "replication/datasender.h"
 #include "replication/walsender.h"
@@ -2783,9 +2784,15 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
         int column_len = attributes[column_index]->attlen;
         proto::Column *column = single_row->add_column();
         column->set_id(column_index);
+        // 如果当前列的值为NULL
+        if (isnull[column_index]) {
+            // TODO(singhearat): 在protobuf格式中添加是否为空的标识
+            continue;
+        }
+
         // 判断该列是定长类型还是变长类型(字符串)
         if (column_len < 0 && (uint32)datum[column_index] != 0) {  // 变长类型
-            column->set_value(VARDATA_ANY(datum[column_index], VARSIZE_ANY(datum[column_index]) - 1));
+            column->set_value(VARDATA_ANY(datum[column_index]), VARSIZE_ANY(datum[column_index]) - 1);
         } else if (column_len > 0 && column_len <= 8) {  // 定长类型
             column->set_value(&datum[column_index], column_len);
         } else if (column_len > 8) {  // 原生字符串类型
@@ -2796,9 +2803,10 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
         }
     }
     // TODO(singheart): set key and value
-    std::string key = "key:" + std::to_string(AllocateUniqueKey());
+    std::string key = std::to_string(AllocateUniqueKey());
     single_row->set_key(key.c_str());
-    single_row->set_data("data");
+    single_row->set_data("useless data");
+    // TODO(singheat): 可采用OID而不是表名，一是网络传输开销更小，二是省去了根据table_name查看tableoid的过程
     single_row->set_table_name(relation->rd_rel->relname.data);
     single_row->set_op_type(type);
     ReadWriteSetInTxn_.push_back(std::move(single_row));
@@ -2811,7 +2819,7 @@ Oid heap_insert(Relation relation, HeapTuple tup, CommandId cid, int options, Bu
         InsertLocalSet(relation, tup, nullptr, proto::Insert);
     }
     // 调用原本的插入逻辑
-    return LocalHeapInsert(relation, tup, cid, options, bistate);
+    // return LocalHeapInsert(relation, tup, cid, options, bistate);
 }
 
 /*
@@ -8414,6 +8422,62 @@ HeapTuple heapam_index_fetch_tuple(IndexScanDesc scan, bool* all_dead) {
     return NULL;
 }
 
+// 将protobuf格式的Row转换为openGaus内部的HeapTuple
+HeapTuple ConstructHeapTupleFromProto(const proto::Row &proto_row) {
+    const std::string &key = proto_row.key();
+    int relation_column_nums;
+    Oid table_oid;
+    Relation relation;
+    Form_pg_attribute* attributes;
+    TM_FailureData tmfd;
+    struct varlena* var_buf;
+    Datum data[MaxTupleAttributeNumber];
+    bool isnull[MaxTupleAttributeNumber];
+
+    // TODO(singheart): 如果字符串很长，可能会超出空间
+    var_buf = (struct varlena *)palloc(VARHDRSZ + 4096);
+    relation = heap_open(table_oid, AccessShareLock);
+    relation_column_nums = relation->rd_att->natts;
+    attributes = relation->rd_att->attrs;
+    for (int column_index = 0; column_index < relation_column_nums; ++column_index) {
+        int column_len = attributes[column_index]->attlen;
+        const proto::Column &column = proto_row.column(column_index);
+        // TODO(singheart): 判断当前列的值是否为NULL
+        if (column_len > 0 && column_len <= 8) {  // 定长类型
+        } else if (column_len == -1 || column_len > 8) {  // 变长类型或者原生字符串类型
+            column_len = static_cast<int>(column.ByteSizeLong());
+            SET_VARSIZE(var_buf, column_len + VARHDRSZ);
+            memcpy(VARDATA(var_buf), column.value().c_str(), column_len);
+            data[column_index] = PointerGetDatum(var_buf);
+        } else {
+            NeuPrintLog("Undefined column length, length is %d\n", column_len);
+        }
+    }
+    HeapTuple tuple = heap_form_tuple(relation->rd_att, data, isnull);
+    return tuple;
+}
+
+Oid GetTableOidByName(const char *table_name) {
+    if (!table_name) {
+        return InvalidOid;
+    }
+    Oid table_oid = InvalidOid;
+    table_oid = get_relname_relid(table_name, PG_PUBLIC_NAMESPACE);
+    if (!OidIsValid(table_oid)) {
+        NeuPrintLog("cannot find table %s\n", table_name);
+    }
+    return table_oid;
+}
+Relation OpenTableByName(const char * table_name, LOCKMODE mode) {
+    Relation rel;
+    Oid table_oid = GetTableOidByName(table_name);
+    if (!OidIsValid(table_oid)) {
+        return nullptr;
+    }
+    rel = heap_open(table_oid, mode);
+    return rel;
+}
+
 // 将TaaS发过来(5556端口)的日志重放，即数据落盘
 bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
     // TODO(singheart): PULL的情况没有进行处理
@@ -8423,15 +8487,20 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
         const proto::StoragePushResponse& push_response = log_message->storage_push_response();
         NeuPrintLog("received storage push response, txn size is %d\n", push_response.txns_size());
         for (int i = 0; i < push_response.txns_size(); ++i) {
-            const proto::Transaction& txn = push_response.txns(i);
             // 对每一个Transaction都进行重放
             StartTransactionCommand();
-            for (int row_idx = 0; row_idx < txn.row_size(); ++row_idx) {
-                const proto::Row &row = txn.row(row_idx);
-                const std::string &key = row.key();
-                const std::string &data = row.data();
-                NeuPrintLog("key is %s, data is %s", key.c_str(), data.c_str());
-                // 根据OpType进行对应的操作
+            const proto::Transaction& txn = push_response.txns(i);
+            for (int row_index = 0; row_index < txn.row_size(); ++row_index) {
+                const proto::Row &row = txn.row(row_index);
+                Relation rel = OpenTableByName(row.table_name().c_str());
+                HeapTuple heap_tuple = ConstructHeapTupleFromProto(row);
+                // 根据OpType进行不同的操作
+                if (row.op_type() == proto::Insert) {
+                    Oid oid = LocalHeapInsert(rel, heap_tuple, GetCurrentCommandId(true), 0, nullptr);
+                } else if (row.op_type() == proto::Update) {
+                } else if (row.op_type() == proto::Delete) {
+                } else if (row.op_type() == proto::Read) {
+                }
             }
             CommitTransactionCommand();
         }

@@ -171,7 +171,7 @@ void NeuPrintLog(const char* format, ...) {
     va_start(args, format);
     std::string msg = vformat_string(format, args);
     va_end(args);
-    ereport(LOG, (errmsg("%s", msg.c_str())));
+    ereport(LOG, (errmsg("NEU: %s", msg.c_str())));
 #endif
 }
 

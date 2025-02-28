@@ -232,7 +232,11 @@ extern BulkInsertState GetBulkInsertState(void);
 extern void FreeBulkInsertState(BulkInsertState);
 
 extern Oid heap_insert(Relation relation, HeapTuple tup, CommandId cid, int options, BulkInsertState bistate);
+// add by singheart
 extern Oid LocalHeapInsert(Relation relation, HeapTuple tup, CommandId cid, int options, BulkInsertState bistate);
+extern Oid GetTableOidByName(const char *table_name);
+extern Relation OpenTableByName(const char *table_name, LOCKMODE mode = AccessShareLock);
+
 extern void heap_abort_speculative(Relation relation, HeapTuple tuple);
 extern bool heap_page_prepare_for_xid(
     Relation relation, Buffer buffer, TransactionId xid, bool multi, bool pageReplication = false);

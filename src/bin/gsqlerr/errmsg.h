@@ -3190,7 +3190,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {804, "42809",
 	  { {"aclchk.cpp", 1897}, {"tablecmds.cpp", 12695}, {"tablecmds.cpp", 16813}, 
-	 {"heapam.cpp", 1591}, {"heapam.cpp", 1601}, },
+	 {"heapam.cpp", 1592}, {"heapam.cpp", 1602}, },
 },
 
 	  {805, "42809",
@@ -8526,7 +8526,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2362, "XX000",
 	  { {"nodeModifyTable.cpp", 1112}, {"nodeModifyTable.cpp", 1912}, {"opfusion.cpp", 2034}, 
-	 {"heapam.cpp", 4467}, },
+	 {"heapam.cpp", 4494}, },
 },
 
 	  {2363, "XX000",
@@ -8539,7 +8539,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2365, "XX000",
 	  { {"nodeModifyTable.cpp", 1552}, {"nodeModifyTable.cpp", 1783}, {"opfusion.cpp", 1848}, 
-	 {"heapam.cpp", 5528}, },
+	 {"heapam.cpp", 5555}, },
 },
 
 	  {2366, "XX000",
@@ -8553,7 +8553,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2368, "XX000",
 	  { {"nodeModifyTable.cpp", 1552}, {"nodeModifyTable.cpp", 1783}, {"opfusion.cpp", 1848}, 
-	 {"heapam.cpp", 5528}, },
+	 {"heapam.cpp", 5555}, },
 },
 
 	  {2369, "XX000",
@@ -13649,7 +13649,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {3759, "XX000",
-	  { {"heapam.cpp", 7963}, },
+	  { {"heapam.cpp", 7990}, },
 },
 
 	  {3763, "XX000",
@@ -25016,7 +25016,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 	 {"postgres.cpp", 3278}, {"postgres.cpp", 3558}, {"postgres.cpp", 4297}, 
 	 {"postgres.cpp", 4795}, {"postgres.cpp", 5190}, {"postgres.cpp", 5260}, 
 	 {"postgres.cpp", 9557}, {"postgres.cpp", 10505}, {"lightProxy.cpp", 1116}, 
-	 {"heapam.cpp", 1320}, },
+	 {"heapam.cpp", 1321}, },
 },
 
 	  {6912, "XX005",
@@ -26583,7 +26583,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {7304, "D0011",
-	  { {"vecmodifytable.cpp", 825}, {"vectsstorescan.cpp", 367}, {"heapam.cpp", 2534}, 
+	  { {"vecmodifytable.cpp", 825}, {"vectsstorescan.cpp", 367}, {"heapam.cpp", 2535}, 
 	 },
 },
 
@@ -27392,15 +27392,15 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {7518, "XX000",
-	  { {"heapam.cpp", 7757}, },
+	  { {"heapam.cpp", 7784}, },
 },
 
 	  {7519, "XX000",
-	  { {"heapam.cpp", 7790}, },
+	  { {"heapam.cpp", 7817}, },
 },
 
 	  {7520, "XX000",
-	  { {"heapam.cpp", 7803}, },
+	  { {"heapam.cpp", 7830}, },
 },
 
 	  {7522, "P0002",
