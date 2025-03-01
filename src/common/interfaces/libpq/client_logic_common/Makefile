@@ -15,7 +15,7 @@ top_builddir = ../../../../../
 # shared library parameters
 NAME= client_logic_common
 
-override CPPFLAGS := -DFRONTEND -DFRONTEND_PARSER -DHAVE_CE -DPGXC -I$(srcdir) $(CPPFLAGS) -I$(top_builddir)/src/ -I$(top_builddir)/src/include -I$(top_builddir)/src/common/interfaces/libpq -std=c++14 -I $(top_builddir)/src/include/libpq
+override CPPFLAGS := -DFRONTEND -DFRONTEND_PARSER -DHAVE_CE -DPGXC -I$(srcdir) $(CPPFLAGS) -I$(top_builddir)/src/ -I$(top_builddir)/src/include -I$(top_builddir)/src/common/interfaces/libpq -std=c++17 -I $(top_builddir)/src/include/libpq
 override CPPFLAGS := $(filter-out -fPIE, $(CPPFLAGS)) -fPIC -fstack-protector-all
 override CFLAGS := $(filter-out -fPIE, $(CFLAGS)) -fPIC -fstack-protector-all
 
@@ -26,7 +26,7 @@ OBJS=statement_data.o client_logic_utils.o table_full_name.o cstrings_map.o cstr
 include $(top_builddir)/src/Makefile.global
 include $(top_builddir)/src/Makefile.shlib
 test:
-	g++ -std=c++14 -g main.cpp
+	g++ -std=c++17 -g main.cpp
 all: all-static-lib
 
 clean distclean: clean-lib

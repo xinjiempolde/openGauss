@@ -250,6 +250,18 @@ LIBS += -l${PROTOBUF_LIB_NAME}
 LIBS += -lzmq
 LDFLAGS += -L${ZEROMQ_LIB_PATH}
 
+################################################################################
+# gflags
+################################################################################
+LIBS += -lgflags
+LDFLAGS += -L${GFLAGS_LIB_PATH}
+
+################################################################################
+# rocksdb
+################################################################################
+LIBS += -lpthread -ldl -lrt -lsnappy -lz -lbz2 -llz4 -lzstd -lrocksdb
+LDFLAGS += -L${ROCKSDB_LIB_PATH}
+
 ##################################################################################
 # kerberos
 ##################################################################################
@@ -652,6 +664,8 @@ endif
 	cp -d $(CJSON_LIB_PATH)/libcjson* '$(DESTDIR)$(libdir)/'
 	cp $(GRPC_LIB_PATH)/* '$(DESTDIR)$(libdir)/'
 	cp -r $(ZEROMQ_LIB_PATH)/* '$(DESTDIR)$(libdir)/'
+	cp -r $(ROCKSDB_LIB_PATH)/* '$(DESTDIR)$(libdir)/'
+	cp -r $(GFLAGS_LIB_PATH)/* '$(DESTDIR)$(libdir)/'
 	cp -r $(PROTOBUF_LIB_PATH)/* '$(DESTDIR)$(libdir)/'
 ifneq (, $(findstring __USE_NUMA, $(CFLAGS)))
 	cp $(NUMA_LIB_PATH)/* '$(DESTDIR)$(libdir)/'

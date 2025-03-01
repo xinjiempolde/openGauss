@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <condition_variable>
 #include <zmq.hpp>
+#include <rocksdb/db.h>
 #include <c.h>
 #include "access/neu_utils/message.pb.h"
 #include "blocking_concurrent_queue.hpp"
@@ -58,6 +59,64 @@ private:
     std::unordered_map<Oid, std::unordered_map<RID, UniqueKey>> fake_index_reverse_;
 };
 
+// UniqueKey和TID的相互映射，使用RocksDB进行持久化
+class PersistTranslator {
+public:
+    PersistTranslator() {
+        options_.create_if_missing = true;
+        rocksdb::Status status = rocksdb::DB::Open(options_, rocksdb_data_path_, &db_);
+        assert(status.ok());
+    }
+    void InsertKeyAndTid(Oid table_oid, UniqueKey key, ItemPointerData tid) {
+        RID rid = TransformOtidToRid(&tid);
+        // 正向索引：table_oid + key -> rid
+        rocksdb::WriteBatch batch;
+        batch.Put(EncodeKey(table_oid, key), std::to_string(rid));
+
+        // 反向索引：table_oid + rid -> key
+        batch.Put(EncodeReverseKey(table_oid, rid), std::to_string(key));
+
+        db_->Write(rocksdb::WriteOptions(), &batch);
+    }
+    // 通过TID获取UniqueKey
+    UniqueKey GetKeyWithTid(Oid table_oid, ItemPointerData tid) {
+        RID rid = TransformOtidToRid(&tid);
+        std::string unique_key;
+        db_->Get(rocksdb::ReadOptions(), EncodeReverseKey(table_oid, rid), &unique_key);
+        return std::stoull(unique_key);
+    }
+    // 通过UniqueKey获取TID
+    ItemPointerData GetTidWithKey(Oid table_oid, UniqueKey key) {
+        std::string value;
+        db_->Get(rocksdb::ReadOptions(), EncodeKey(table_oid, key), &value);
+        RID rid = std::stoull(value);
+        return TransformRidToTid(rid);
+    }
+private:
+    std::string EncodeKey(Oid oid, UniqueKey key) {
+        return std::to_string(oid) + "_" + std::to_string(key);
+    }
+    std::string EncodeReverseKey(Oid oid, RID rid) {
+        // TODO(singheart): make this smaller
+        return std::to_string(oid) + "_rev_" + std::to_string(rid);
+    }
+    RID TransformOtidToRid(ItemPointer otid) {
+        RID rid = (RID)(otid->ip_blkid.bi_hi << 32 | otid->ip_blkid.bi_lo << 16 | otid->ip_posid);
+        return rid;
+    }
+    ItemPointerData TransformRidToTid(RID rid) {
+        ItemPointerData tid;
+        tid.ip_blkid.bi_hi = (rid >> 32) & 0xFFFF;
+        tid.ip_blkid.bi_lo = (rid >> 16) & 0xFFFF;
+        tid.ip_posid = rid & 0xFFFF;
+        return tid;
+    }
+private:
+    std::string rocksdb_data_path_ = "/tmp/translator";
+    rocksdb::Options options_;
+    rocksdb::DB *db_{nullptr};
+};
+
 extern moodycamel::BlockingConcurrentQueue<std::unique_ptr<zmq::message_t>> transaction_message_queue_;
 extern moodycamel::BlockingConcurrentQueue<std::unique_ptr<proto::Message>> apply_log_message_queue_;
 extern std::string taas_ipv4_addr;
@@ -65,7 +124,7 @@ extern thread_local std::vector<std::unique_ptr<proto::Row>> ReadWriteSetInTxn_;
 extern std::mutex cv_mutex_;
 extern std::unordered_map<TransactionId, std::shared_ptr<NeuTransactionManager>> cv_map_;
 extern std::unordered_map<Oid, std::unordered_map<UniqueKey, ItemPointerData>> fake_index_;
-extern KeyAndTidTranslator tid_translator_;
+extern PersistTranslator tid_translator_;
 
 UniqueKey AllocateUniqueKey();
 void NeuPrintLog(const char *format, ...);

@@ -33,7 +33,7 @@ std::mutex cv_mutex_;
 std::unordered_map<TransactionId, std::shared_ptr<NeuTransactionManager>> cv_map_;
 // 用于记录主键到RID的映射
 // TODO(singheart): 后续应考虑持久化的问题
-KeyAndTidTranslator tid_translator_;
+PersistTranslator tid_translator_;
 //=== NEU全局变量定义结束 ===//
 
 // 将事务(或者说读写集)发送给TaaS

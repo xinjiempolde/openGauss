@@ -353,6 +353,8 @@ else
   CJSON_HOME = $(with_3rd)/$(BINARYPATH)/cjson/$(LIB_SUPPORT_LLT)
   PROTOBUF_HOME = $(with_3rd)/$(BINARYPATH)/protobuf/$(LIB_SUPPORT_LLT)
   ZEROMQ_HOME = $(with_3rd)/$(BINARYPATH)/zeromq/$(LIB_SUPPORT_LLT)
+  ROCKSDB_HOME = $(with_3rd)/$(BINARYPATH)/rocksdb/$(LIB_SUPPORT_LLT)
+  GFLAGS_HOME = $(with_3rd)/$(BINARYPATH)/gflags/$(LIB_SUPPORT_LLT)
   KERBEROS_HOME = $(with_3rd)/$(BINARYPATH)/kerberos/$(LIB_SUPPORT_LLT)
   BOOST_HOME = $(with_3rd)/$(BINARYPATH)/boost/$(LIB_SUPPORT_LLT)
   LIBORC_HOME = $(with_3rd)/$(BINARYPATH)/liborc/$(LIB_SUPPORT_LLT)
@@ -568,6 +570,16 @@ PROTOBUF_LIB_PATH = $(PROTOBUF_HOME)/lib
 ZEROMQ_INCLUDE_PATH = $(ZEROMQ_HOME)/include
 ZEROMQ_LIB_PATH = $(ZEROMQ_HOME)/lib
 
+# rocksdb component
+#############################################################################
+ROCKSDB_INCLUDE_PATH = $(ROCKSDB_HOME)/include
+ROCKSDB_LIB_PATH = $(ROCKSDB_HOME)/lib
+
+# gflags component
+#############################################################################
+GFLAGS_INCLUDE_PATH = $(GFLAGS_HOME)/include
+GFLAGS_LIB_PATH = $(GFLAGS_HOME)/lib
+
 #############################################################################
 # kerberos component
 #############################################################################
@@ -745,7 +757,7 @@ else # not PGXS
   endif  
 endif
 
-override CPPFLAGS := $(CPPFLAGS) -I$(LIBODBC_INCLUDE_PATH) -I$(LIBOBS_INCLUDE_PATH) -I$(LIBCGROUP_INCLUDE_PATH) -I$(LIBOPENSSL_INCLUDE_PATH) -I${LIBORC_INCLUDE_PATH} -I${LIBPARQUET_INCLUDE_PATH} -I${PROTOBUF_INCLUDE_PATH} -I${ZEROMQ_INCLUDE_PATH} -I${GRPC_INCLUDE_PATH} -I${BOOST_INCLUDE_PATH} -I$(LIBLLVM_INCLUDE_PATH) -I$(KERBEROS_INCLUDE_PATH) -I$(HLL_INCLUDE_PATH) -I$(CJSON_INCLUDE_PATH) -I$(LIBEDIT_INCLUDE_PATH) -I$(NUMA_INCLUDE_PATH) -I$(ZLIB_INCLUDE_PATH) -I$(LZ4_INCLUDE_PATH) -I$(LIBCURL_INCLUDE_PATH)
+override CPPFLAGS := $(CPPFLAGS) -I$(LIBODBC_INCLUDE_PATH) -I$(LIBOBS_INCLUDE_PATH) -I$(LIBCGROUP_INCLUDE_PATH) -I$(LIBOPENSSL_INCLUDE_PATH) -I${LIBORC_INCLUDE_PATH} -I${LIBPARQUET_INCLUDE_PATH} -I${PROTOBUF_INCLUDE_PATH} -I${ZEROMQ_INCLUDE_PATH} -I${GFLAGS_INCLUDE_PATH} -I${ROCKSDB_INCLUDE_PATH} -I${GRPC_INCLUDE_PATH} -I${BOOST_INCLUDE_PATH} -I$(LIBLLVM_INCLUDE_PATH) -I$(KERBEROS_INCLUDE_PATH) -I$(HLL_INCLUDE_PATH) -I$(CJSON_INCLUDE_PATH) -I$(LIBEDIT_INCLUDE_PATH) -I$(NUMA_INCLUDE_PATH) -I$(ZLIB_INCLUDE_PATH) -I$(LZ4_INCLUDE_PATH) -I$(LIBCURL_INCLUDE_PATH)
 
 ifeq ($(enable_multiple_nodes), yes)
   # GDS links to libevent
@@ -807,9 +819,14 @@ ifeq ($(enable_thread_check), yes)
   CXXFLAGS += -fsanitize=thread -fno-omit-frame-pointer
 endif
 
+
+CFLAGS += -Wno-error=register
+CXXFLAGS += -Wno-error=register
+
 CXXFLAGS += -Wl,-z,relro,-z,now
 CXXFLAGS += -Wl,-z,noexecstack
-CXXFLAGS += -std=c++14
+CXXFLAGS += -std=c++17
+
 override CXXFLAGS += $(PTHREAD_CFLAGS)
 # Kind-of compilers
 

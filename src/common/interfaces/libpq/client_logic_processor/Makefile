@@ -47,5 +47,5 @@ clean distclean: clean-lib
 
 maintainer-clean: distclean maintainer-clean-lib
 test: 
-	g++ -g  -fPIE -O0 --std=c++14-o test main.cpp  -I$(srcdir) $(CPPFLAGS) -I$(top_builddir)/src/ -I$(top_builddir)/src/include -I$(top_builddir)/src/interfaces/libpq \
+	g++ -g  -fPIE -O0 --std=c++17-o test main.cpp  -I$(srcdir) $(CPPFLAGS) -I$(top_builddir)/src/ -I$(top_builddir)/src/include -I$(top_builddir)/src/interfaces/libpq \
 		-L$(top_builddir)/src/interfaces/libpq -lpq -L../frontend_parser -lparser_frontend
