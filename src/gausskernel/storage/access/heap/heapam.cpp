@@ -8532,6 +8532,7 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
                 } else if (row.op_type() == proto::Update) {
                     ItemPointerData tid = tid_translator_.GetTidWithKey(rel->rd_id, std::stoull(row.key()));
                     LocalHeapUpdate(rel, nullptr, &tid, heap_tuple, GetCurrentCommandId(true), InvalidSnapshot, true, &tmfd);
+                    tid_translator_.UpdateKeyAndTid(rel->rd_id, std::stoull(row.key()), tid, heap_tuple->t_self);
                 } else if (row.op_type() == proto::Delete) {
                 } else if (row.op_type() == proto::Read) {
                 }
@@ -8541,4 +8542,6 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
     } else {
         NeuPrintLog("undefined message type, it's not a valid Log Message\n");
     }
+
+    return true;
 }

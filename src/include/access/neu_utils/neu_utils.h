@@ -60,17 +60,30 @@ private:
 };
 
 // UniqueKey和TID的相互映射，使用RocksDB进行持久化
+// TODO(singheart): 每次都要字符串和整形相互转换性能损耗，后续应该直接写入byte数据
 class PersistTranslator {
 public:
     PersistTranslator() {
         options_.create_if_missing = true;
-        rocksdb::Status status = rocksdb::DB::Open(options_, rocksdb_data_path_, &db_);
-        assert(status.ok());
+    }
+    ~PersistTranslator() {
+        if (db_ != nullptr) {
+            db_->Close();
+            db_ = nullptr;
+        }
+    }
+
+    void InitTranslator() {
+        if (db_ == nullptr) {
+            rocksdb::Status status = rocksdb::DB::Open(options_, "/tmp/translator", &db_);
+            assert(status.ok());
+        }
     }
     void InsertKeyAndTid(Oid table_oid, UniqueKey key, ItemPointerData tid) {
+        InitTranslator();
         RID rid = TransformOtidToRid(&tid);
-        // 正向索引：table_oid + key -> rid
         rocksdb::WriteBatch batch;
+        // 正向索引：table_oid + key -> rid
         batch.Put(EncodeKey(table_oid, key), std::to_string(rid));
 
         // 反向索引：table_oid + rid -> key
@@ -78,8 +91,29 @@ public:
 
         db_->Write(rocksdb::WriteOptions(), &batch);
     }
+
+    // 由于每次heap_update的时候TID都会发生变化，因此在heap_update后也需要即时更新映射
+    void UpdateKeyAndTid(Oid table_oid, UniqueKey key, ItemPointerData old_tid, ItemPointerData new_tid) {
+        InitTranslator();
+        RID old_rid = TransformOtidToRid(&old_tid);
+        RID new_rid = TransformOtidToRid(&new_tid);
+        rocksdb::WriteBatch batch;
+        // 更新正向索引
+        batch.Put(EncodeKey(table_oid, key), std::to_string(new_rid));
+
+        // 先删除旧的反向索引
+        std::string new_reverse_key = EncodeReverseKey(table_oid, old_rid);
+        batch.Delete(new_reverse_key);
+        // 在插入新的反向索引
+        batch.Put(new_reverse_key, std::to_string(new_rid));
+
+        db_->Write(rocksdb::WriteOptions(), &batch);
+
+    }
+
     // 通过TID获取UniqueKey
     UniqueKey GetKeyWithTid(Oid table_oid, ItemPointerData tid) {
+        InitTranslator();
         RID rid = TransformOtidToRid(&tid);
         std::string unique_key;
         db_->Get(rocksdb::ReadOptions(), EncodeReverseKey(table_oid, rid), &unique_key);
@@ -87,6 +121,7 @@ public:
     }
     // 通过UniqueKey获取TID
     ItemPointerData GetTidWithKey(Oid table_oid, UniqueKey key) {
+        InitTranslator();
         std::string value;
         db_->Get(rocksdb::ReadOptions(), EncodeKey(table_oid, key), &value);
         RID rid = std::stoull(value);

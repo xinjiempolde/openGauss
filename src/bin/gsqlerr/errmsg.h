@@ -12656,66 +12656,66 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {3462, "XX000",
-	  { {"xact.cpp", 4272}, },
+	  { {"xact.cpp", 4276}, },
 },
 
 	  {3463, "XX000",
-	  { {"xact.cpp", 4380}, },
+	  { {"xact.cpp", 4384}, },
 },
 
 	  {3464, "XX000",
-	  { {"xact.cpp", 4405}, {"xact.cpp", 4585}, {"xact.cpp", 4680}, 
+	  { {"xact.cpp", 4409}, {"xact.cpp", 4589}, {"xact.cpp", 4684}, 
 	 },
 },
 
 	  {3465, "25001",
-	  { {"xact.cpp", 4908}, },
+	  { {"xact.cpp", 4912}, },
 },
 
 	  {3466, "25001",
-	  { {"xact.cpp", 4913}, },
+	  { {"xact.cpp", 4917}, },
 },
 
 	  {3469, "25P01",
-	  { {"xact.cpp", 4968}, },
+	  { {"xact.cpp", 4972}, },
 },
 
 	  {3470, "XX000",
-	  { {"xact.cpp", 5291}, },
+	  { {"xact.cpp", 5295}, },
 },
 
 	  {3471, "XX000",
-	  { {"xact.cpp", 5393}, {"xact.cpp", 5404}, {"xact.cpp", 5471}, 
-	 {"xact.cpp", 5515}, },
+	  { {"xact.cpp", 5397}, {"xact.cpp", 5408}, {"xact.cpp", 5475}, 
+	 {"xact.cpp", 5519}, },
 },
 
 	  {3472, "XX000",
-	  { {"xact.cpp", 5621}, },
+	  { {"xact.cpp", 5625}, },
 },
 
 	  {3473, "XX000",
-	  { {"xact.cpp", 5675}, },
+	  { {"xact.cpp", 5679}, },
 },
 
 	  {3475, "XX000",
-	  { {"xact.cpp", 5746}, },
+	  { {"xact.cpp", 5750}, },
 },
 
 	  {3476, "XX000",
-	  { {"xact.cpp", 5839}, {"xact.cpp", 5885}, {"xact.cpp", 5899}, 
+	  { {"xact.cpp", 5843}, {"xact.cpp", 5889}, {"xact.cpp", 5903}, 
 	 },
 },
 
 	  {3478, "XX000",
-	  { {"xact.cpp", 5973}, },
+	  { {"xact.cpp", 5977}, },
 },
 
 	  {3480, "XX000",
-	  { {"xact.cpp", 6415}, },
+	  { {"xact.cpp", 6419}, },
 },
 
 	  {3482, "XX000",
-	  { {"xact.cpp", 6985}, },
+	  { {"xact.cpp", 6989}, },
 },
 
 	  {3485, "XX000",
@@ -28237,15 +28237,15 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {7737, "25000",
-	  { {"xact.cpp", 4878}, },
+	  { {"xact.cpp", 4882}, },
 },
 
 	  {7742, "XX000",
-	  { {"xact.cpp", 6567}, },
+	  { {"xact.cpp", 6571}, },
 },
 
 	  {7743, "DB010",
-	  { {"xact.cpp", 7739}, },
+	  { {"xact.cpp", 7743}, },
 },
 
 	  {7745, "XX000",
@@ -30372,7 +30372,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {8277, "XX000",
-	  { {"xact.cpp", 2969}, },
+	  { {"xact.cpp", 2973}, },
 },
 
 	  {8278, "55000",

@@ -2943,7 +2943,11 @@ static void CommitTransaction(bool STP_commit) {
         proto::Transaction* txn = message->mutable_txn();
         auto* rows = txn->mutable_row();
         for (auto& row : ReadWriteSetInTxn_) {
-            fprintf(stderr, "key is %s, values is %s", row->key().c_str(), row->data().c_str());
+            if (row == nullptr) {
+                NeuPrintLog("row is nullptr in ReadWriteSet\n");
+                continue;
+            }
+            NeuPrintLog("key is %s, values is %s", row->key().c_str(), row->data().c_str());
             rows->AddAllocated(row.release());
         }
         txn->set_client_ip(GetIPV4Address());
