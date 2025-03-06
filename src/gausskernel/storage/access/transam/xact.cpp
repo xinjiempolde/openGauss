@@ -2947,7 +2947,7 @@ static void CommitTransaction(bool STP_commit) {
                 NeuPrintLog("row is nullptr in ReadWriteSet\n");
                 continue;
             }
-            NeuPrintLog("key is %s, values is %s", row->key().c_str(), row->data().c_str());
+            // NeuPrintLog("key is %s, values is %s", row->key().c_str(), row->data().c_str());
             rows->AddAllocated(row.release());
         }
         txn->set_client_ip(GetIPV4Address());

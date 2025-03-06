@@ -321,6 +321,7 @@ src/common/backend/utils/error/plog.cpp
 src/common/backend/utils/fmgr/dfmgr.cpp
 src/common/backend/utils/fmgr/fmgr.cpp
 src/common/backend/utils/fmgr/funcapi.cpp
+src/common/backend/utils/fmgrtab.cpp
 src/common/backend/utils/hash/dynahash.cpp
 src/common/backend/utils/hash/hashfn.cpp
 src/common/backend/utils/init/globals.cpp
@@ -1048,6 +1049,7 @@ src/gausskernel/storage/lmgr/lmgr.cpp
 src/gausskernel/storage/lmgr/lock.cpp
 src/gausskernel/storage/lmgr/lwlock.cpp
 src/gausskernel/storage/lmgr/lwlock_be.cpp
+src/gausskernel/storage/lmgr/lwlocknames.cpp
 src/gausskernel/storage/lmgr/predicate.cpp
 src/gausskernel/storage/lmgr/proc.cpp
 src/gausskernel/storage/lmgr/s_lock.cpp

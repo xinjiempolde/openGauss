@@ -8526,7 +8526,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2362, "XX000",
 	  { {"nodeModifyTable.cpp", 1112}, {"nodeModifyTable.cpp", 1912}, {"opfusion.cpp", 2034}, 
-	 {"heapam.cpp", 4508}, },
+	 {"heapam.cpp", 4522}, },
 },
 
 	  {2363, "XX000",
@@ -8539,7 +8539,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2365, "XX000",
 	  { {"nodeModifyTable.cpp", 1552}, {"nodeModifyTable.cpp", 1783}, {"opfusion.cpp", 1848}, 
-	 {"heapam.cpp", 5574}, },
+	 {"heapam.cpp", 5588}, },
 },
 
 	  {2366, "XX000",
@@ -8553,7 +8553,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 
 	  {2368, "XX000",
 	  { {"nodeModifyTable.cpp", 1552}, {"nodeModifyTable.cpp", 1783}, {"opfusion.cpp", 1848}, 
-	 {"heapam.cpp", 5574}, },
+	 {"heapam.cpp", 5588}, },
 },
 
 	  {2369, "XX000",
@@ -13649,7 +13649,7 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {3759, "XX000",
-	  { {"heapam.cpp", 8009}, },
+	  { {"heapam.cpp", 8023}, },
 },
 
 	  {3763, "XX000",
@@ -27392,15 +27392,15 @@ static const mppdb_err_msg_t g_mppdb_errors[] =
 },
 
 	  {7518, "XX000",
-	  { {"heapam.cpp", 7803}, },
+	  { {"heapam.cpp", 7817}, },
 },
 
 	  {7519, "XX000",
-	  { {"heapam.cpp", 7836}, },
+	  { {"heapam.cpp", 7850}, },
 },
 
 	  {7520, "XX000",
-	  { {"heapam.cpp", 7849}, },
+	  { {"heapam.cpp", 7863}, },
 },
 
 	  {7522, "P0002",

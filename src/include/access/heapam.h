@@ -234,6 +234,7 @@ extern void FreeBulkInsertState(BulkInsertState);
 extern Oid heap_insert(Relation relation, HeapTuple tup, CommandId cid, int options, BulkInsertState bistate);
 // add by singheart
 extern Oid LocalHeapInsert(Relation relation, HeapTuple tup, CommandId cid, int options, BulkInsertState bistate);
+extern TM_Result LocalHeapDelete(Relation relation, ItemPointer tid, CommandId cid, Snapshot crosscheck, bool wait, TM_FailureData *tmfd, bool allow_delete_self = false);
 extern Oid GetTableOidByName(const char *table_name);
 extern Relation OpenTableByName(const char *table_name, LOCKMODE mode = AccessShareLock);
 

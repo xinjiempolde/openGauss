@@ -30,7 +30,7 @@ void NeuTransactionSenderMain() {
         t_thrd.top_mem_cxt, "txn sender", ALLOCSET_DEFAULT_MINSIZE,
         ALLOCSET_DEFAULT_INITSIZE, ALLOCSET_DEFAULT_MAXSIZE);
     (void)MemoryContextSwitchTo(datawriter_context);
-    t_thrd.proc_cxt.PostInit->SetDatabaseAndUser("learn", InvalidOid,
+    t_thrd.proc_cxt.PostInit->SetDatabaseAndUser("tpcc", InvalidOid,
                                                  "singheart");
     t_thrd.proc_cxt.PostInit->InitNeuTransactionSender();
     SendWorkerThreadMain();

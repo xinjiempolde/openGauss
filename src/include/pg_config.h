@@ -709,7 +709,7 @@
 #define PG_VERSION "9.2.4"
 
 /* Gaussdb version as a string*/
-#define DEF_GS_VERSION "(openGauss 2.0.0 build ) compiled at 2025-02-25 19:58:58 commit 0 last mr  debug"
+#define DEF_GS_VERSION "(openGauss 2.0.0 build 0c15c7a7) compiled at 2025-03-05 21:59:24 commit 0 last mr  debug"
 
 /* PostgreSQL version as a number */
 #define PG_VERSION_NUM 90204
@@ -724,7 +724,7 @@
 #define PGXC_VERSION_NUM 
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 9.2.4 (openGauss 2.0.0 build ) compiled at 2025-02-25 19:58:58 commit 0 last mr  debug on x86_64-unknown-linux-gnu, compiled by g++ (GCC) 7.3.0, 64-bit"
+#define PG_VERSION_STR "PostgreSQL 9.2.4 (openGauss 2.0.0 build 0c15c7a7) compiled at 2025-03-05 21:59:24 commit 0 last mr  debug on x86_64-unknown-linux-gnu, compiled by g++ (GCC) 7.3.0, 64-bit"
 
 /* A string containing the version number of Postgres-XC, platform, and C compiler */
 #define PGXC_VERSION_STR "Postgres-XC 1.1 on x86_64-unknown-linux-gnu, based on PostgreSQL 9.2.4, compiled by g++ (GCC) 7.3.0, 64-bit"
@@ -775,7 +775,7 @@
 #define UINT64_FORMAT "%lu"
 
 /* Define to 1 to build with assertion checks. (--enable-cassert) */
-#define USE_ASSERT_CHECKING 1
+/* #undef USE_ASSERT_CHECKING */
 
 /* Define to 1 to enable llt test. (--enable-llt) */
 /* #undef ENABLE_LLT */

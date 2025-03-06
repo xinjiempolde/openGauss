@@ -33,7 +33,7 @@ void NeuApplyLogReceiverMain() {
                                             ALLOCSET_DEFAULT_INITSIZE,
                                             ALLOCSET_DEFAULT_MAXSIZE);
   (void)MemoryContextSwitchTo(datawriter_context);
-  t_thrd.proc_cxt.PostInit->SetDatabaseAndUser("learn", InvalidOid, "singheart");
+  t_thrd.proc_cxt.PostInit->SetDatabaseAndUser("tpcc", InvalidOid, "singheart");
   t_thrd.proc_cxt.PostInit->InitNeuApplyLogReceiver();
   ApplyLogWorkerThreadMain();
 }

@@ -2819,10 +2819,13 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
     }
     std::string key = std::to_string(number_key);
     single_row->set_key(key.c_str());
-    single_row->set_data("useless data");
+    // single_row->set_data("useless data");
     // TODO(singheat): 可采用OID而不是表名，一是网络传输开销更小，二是省去了根据table_name查看table_oid的过程
     single_row->set_table_name(relation->rd_rel->relname.data);
     single_row->set_op_type(type);
+    if (single_row == nullptr) {
+        NeuPrintLog("should not insert ReadWriteSet, row is nullptr\n");
+    }
     ReadWriteSetInTxn_.push_back(std::move(single_row));
 }
 
@@ -2835,6 +2838,7 @@ Oid heap_insert(Relation relation, HeapTuple tup, CommandId cid, int options, Bu
     InsertLocalSet(relation, tup, nullptr, proto::Insert);
     return 0;
 }
+
 
 /*
  * heap_abort_speculative - kill a speculatively inserted tuple
@@ -4071,7 +4075,7 @@ Oid simple_heap_insert(Relation relation, HeapTuple tup) {
  * tuple was updated, and t_ctid is the location of the replacement tuplemin.
  * (t_xmax is needed to verify that the replacement tuple matches.)
  */
-TM_Result heap_delete(Relation relation, ItemPointer tid, CommandId cid,
+TM_Result LocalHeapDelete(Relation relation, ItemPointer tid, CommandId cid,
                       Snapshot crosscheck, bool wait, TM_FailureData* tmfd,
                       bool allow_delete_self) {
     TM_Result result;
@@ -4452,6 +4456,16 @@ l1:
         heap_freetuple(old_key_tuple);
     }
 
+    return TM_Ok;
+}
+
+
+TM_Result heap_delete(Relation relation, ItemPointer tid, CommandId cid, Snapshot crosscheck, bool wait, TM_FailureData *tmfd, bool allow_delete_self) {
+    if (!IsTransactionBlock()) {
+        // 如果不是显示事务，调用原本的逻辑
+        return LocalHeapDelete(relation, tid, cid, crosscheck, wait, tmfd, allow_delete_self);
+    }
+    InsertLocalSet(relation, nullptr, tid, proto::Delete);
     return TM_Ok;
 }
 
