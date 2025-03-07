@@ -2790,12 +2790,15 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
         // 如果当前列的值为NULL
         if (isnull[column_index]) {
             // TODO(singhearat): 在protobuf格式中添加是否为空的标识
+            column->set_id(-1);
+            column->set_value("NULL");
+            NeuPrintLog("table %s, column index %d is null", relation->rd_rel->relname.data, column_index);
             continue;
         }
 
         // 判断该列是定长类型还是变长类型(字符串)
         if (column_len < 0 && (uint32)datum[column_index] != 0) {  // 变长类型
-            column->set_value(VARDATA_ANY(datum[column_index]), VARSIZE_ANY(datum[column_index]) - 1);
+            column->set_value(VARDATA_ANY(datum[column_index]), VARSIZE_ANY(datum[column_index]));
         } else if (column_len > 0 && column_len <= 8) {  // 定长类型
             column->set_value(&datum[column_index], column_len);
         } else if (column_len > 8) {  // 原生字符串类型
@@ -8471,21 +8474,25 @@ HeapTuple ConstructHeapTupleFromProto(Relation relation, const proto::Row &proto
         return nullptr;
     }
 
-    // TODO(singheart): 如果字符串很长，可能会超出空间
-    var_buf = (struct varlena *)palloc(VARHDRSZ + 4096);
     relation_column_nums = relation->rd_att->natts;
     attributes = relation->rd_att->attrs;
     for (int column_index = 0; column_index < relation_column_nums; ++column_index) {
         int column_len = attributes[column_index]->attlen;
         const proto::Column &column = proto_row.column(column_index);
         // TODO(singheart): 判断当前列的值是否为NULL
+        if (column.id() == -1 && column.value() == "NULL") {
+            isnull[column_index] = true;
+            continue;
+        }
         isnull[column_index] = false;
         if (column_len == 4) {  // 定长类型
             data[column_index] = *(int32 *)column.value().c_str();
         } else if (column_len == 8) {  // 定长类型
             data[column_index] = *(int64 *)column.value().c_str();
         } else if (column_len == -1 || column_len > 8) {  // 变长类型或者原生字符串类型
-            column_len = static_cast<int>(column.ByteSizeLong());
+            column_len = static_cast<int>(column.value().size());
+            // TODO(singheart): 如果字符串很长，可能会超出空间
+            var_buf = (struct varlena *)palloc(VARHDRSZ + 4096);
             // 设置可变字符串头部长度
             SET_VARSIZE(var_buf, column_len + VARHDRSZ);
             memcpy(VARDATA(var_buf), column.value().c_str(), column_len);
@@ -8537,7 +8544,7 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
             const proto::Transaction& txn = push_response.txns(i);
             for (int row_index = 0; row_index < txn.row_size(); ++row_index) {
                 const proto::Row &row = txn.row(row_index);
-                Relation rel = OpenTableByName(row.table_name().c_str());
+                Relation rel = OpenTableByName(row.table_name().c_str(), ExclusiveLock);
                 HeapTuple heap_tuple = ConstructHeapTupleFromProto(rel, row);
                 // 根据OpType进行不同的操作
                 if (row.op_type() == proto::Insert) {
@@ -8550,12 +8557,13 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
                 } else if (row.op_type() == proto::Delete) {
                 } else if (row.op_type() == proto::Read) {
                 }
+                heap_freetuple_ext(heap_tuple);
+                heap_close(rel, ExclusiveLock);
             }
             CommitTransactionCommand();
         }
     } else {
         NeuPrintLog("undefined message type, it's not a valid Log Message\n");
     }
-
     return true;
 }
