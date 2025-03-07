@@ -2798,7 +2798,7 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
 
         // 判断该列是定长类型还是变长类型(字符串)
         if (column_len < 0 && (uint32)datum[column_index] != 0) {  // 变长类型
-            column->set_value(VARDATA_ANY(datum[column_index]), VARSIZE_ANY(datum[column_index]));
+            column->set_value(VARDATA_ANY(datum[column_index]), VARSIZE_ANY_EXHDR(datum[column_index]));
         } else if (column_len > 0 && column_len <= 8) {  // 定长类型
             column->set_value(&datum[column_index], column_len);
         } else if (column_len > 8) {  // 原生字符串类型

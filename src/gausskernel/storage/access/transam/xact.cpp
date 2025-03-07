@@ -2954,6 +2954,9 @@ static void CommitTransaction(bool STP_commit) {
         txn->set_client_txn_id(xid);
         txn->set_storage_type("mot");
 
+        // 清空读写集
+        ReadWriteSetInTxn_.clear();
+
         // 将protobuf格式的数据序列化，变成zmq::message_t的格式，并放到发送队列中
         google::protobuf::io::StringOutputStream output_stream(serialized_txn_ptr.get());
         bool protobuf_serialize_result = message->SerializeToZeroCopyStream(&output_stream);
@@ -2970,11 +2973,12 @@ static void CommitTransaction(bool STP_commit) {
         // 在此收到了TaaS的反馈，根据反馈的事务状态做相应的处理
         NeuPrintLog("transaction %lu wake up, txn state is %d\n", xid, txn_manager->txn_state_);
         if (txn_manager->txn_state_ == STATE_ABORT) {
+            txn_manager->txn_state_ = STATE_INVALID;
+            lock.unlock();
             ereport(ERROR, (errmsg("Transaction %lu abort, told by TaaS\n", xid)));
         }
 
         // 重置该事务的相关状态
-        ReadWriteSetInTxn_.clear();
         txn_manager->txn_state_ = STATE_INVALID;
     }
 

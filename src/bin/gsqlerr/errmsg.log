@@ -1,4 +1,4 @@
---start time: 2025-03-07 15:47:51  
+--start time: 2025-03-07 21:01:34  
 FUNC:[readErrmsgFile] LINE[1422]: process readErrmsgFile success.
 Scan and process file:/home/singheart/openGauss/src/common/backend/parser/hint_scan.l success.
 Scan and process file:/home/singheart/openGauss/src/common/backend/parser/scan.l success.
