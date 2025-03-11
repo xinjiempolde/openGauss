@@ -187,22 +187,26 @@ UniqueKey AllocateUniqueKey() {
 
 // 获取当前机器的IPV4地址，只获取ens8f0网卡的地址
 std::string GetIPV4Address() {
-    struct ifaddrs *ifaddr, *ifa;
-    static std::string ip(INET_ADDRSTRLEN, '\0');
-    if (ip[0] != '\0') return ip;
-    if (getifaddrs(&ifaddr) == -1) return "";
-    for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr == NULL) continue;
-        if (ifa->ifa_addr->sa_family == AF_INET) {
-            void* addr = &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr;
-            inet_ntop(AF_INET, addr, const_cast<char*>(ip.c_str()), INET_ADDRSTRLEN);
-            if (strcmp(ifa->ifa_name, "ens8f0") == 0) break;
+    static std::string ip;
+    static std::once_flag once;
+    std::call_once(once, []() {
+        struct ifaddrs *ifaddr, *ifa;
+        char buffer[INET_ADDRSTRLEN] = {0};
+
+        if (getifaddrs(&ifaddr) == -1) return;
+
+        for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+            if (!ifa->ifa_addr || strcmp(ifa->ifa_name, "ens8f0")) continue;
+            // 只处理IPV4地址
+            if (ifa->ifa_addr->sa_family == AF_INET) {
+                void* addr = &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr;
+                if (inet_ntop(AF_INET, addr, buffer, INET_ADDRSTRLEN)) {
+                    ip = buffer;
+                    break;
+                }
+            }
         }
-    }
-    freeifaddrs(ifaddr);
-    // 去除'\0'
-    while (!ip.empty() && ip.back() == '\0') {
-        ip.pop_back();
-    }
+        freeifaddrs(ifaddr);
+    });
     return ip;
 }

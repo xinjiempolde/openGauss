@@ -2820,6 +2820,10 @@ void InsertLocalSet(Relation relation, HeapTuple tup, ItemPointer otid, proto::O
     } else if (type == proto::Read) {
         number_key = tid_translator_.GetKeyWithTid(relation->rd_id, *otid);
     }
+    if (number_key == 0) {
+        // TODO(singheart): failed to get unique_key
+        return;
+    }
     std::string key = std::to_string(number_key);
     single_row->set_key(key.c_str());
     // single_row->set_data("useless data");
@@ -8552,7 +8556,8 @@ bool ApplyWriteSet(std::unique_ptr<proto::Message> log_message) {
                     tid_translator_.InsertKeyAndTid(rel->rd_id, std::stoull(row.key()), heap_tuple->t_self);
                 } else if (row.op_type() == proto::Update) {
                     ItemPointerData tid = tid_translator_.GetTidWithKey(rel->rd_id, std::stoull(row.key()));
-                    LocalHeapUpdate(rel, nullptr, &tid, heap_tuple, GetCurrentCommandId(true), InvalidSnapshot, true, &tmfd);
+                    if (tid.ip_posid == 0 && tid.ip_blkid.bi_hi == 0 && tid.ip_blkid.bi_lo == 0) continue;
+                    LocalHeapUpdate(rel, nullptr, &tid, heap_tuple, GetCurrentCommandId(true), InvalidSnapshot, true, &tmfd, true);
                     tid_translator_.UpdateKeyAndTid(rel->rd_id, std::stoull(row.key()), tid, heap_tuple->t_self);
                 } else if (row.op_type() == proto::Delete) {
                 } else if (row.op_type() == proto::Read) {

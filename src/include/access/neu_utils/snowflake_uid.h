@@ -33,6 +33,8 @@ class SnowflakeDistributeID {
   }
 
   uint64_t NextID() {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     long timestamp = TimeGen();
     // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过，这个时候应当抛出异常
     if (timestamp < lastTimestamp_) {
@@ -57,9 +59,11 @@ class SnowflakeDistributeID {
   }
 
  private:
-  long TimeGen() {
-    gettimeofday(&time_, nullptr);
-    return time_.tv_sec * 1000 + time_.tv_usec / 1000;
+  // 获取当前的毫秒是坚持
+  static long TimeGen() {
+    struct timeval time {};
+    gettimeofday(&time, nullptr);
+    return time.tv_sec * 1000 + time.tv_usec / 1000;
   }
 
   long TilNextMillis(long lastTimestamp) {
@@ -71,8 +75,6 @@ class SnowflakeDistributeID {
   }
 
  private:
-  /* 用于获取当前的时间戳结构 */
-  struct timeval time_ {};
   /* 从2015-01-01开始计算时间戳的差值 */
   const long startTimeStamp_ = 1420041600000L;
   /* 机器ID */
@@ -100,5 +102,7 @@ class SnowflakeDistributeID {
   long sequence_ = 0L;
   /* 毫秒内序列的掩码 */
   long sequenceMask = -1L ^ (-1L << 12);
+  /* 线程安全的锁 */
+  std::mutex mutex_;
 };
 #endif //SNOWFLAKE_UID_H

@@ -83,6 +83,7 @@ public:
         InitTranslator();
         RID rid = TransformOtidToRid(&tid);
         rocksdb::WriteBatch batch;
+        std::lock_guard<std::mutex> lock(mutex_);
         // 正向索引：table_oid + key -> rid
         batch.Put(EncodeKey(table_oid, key), std::to_string(rid));
 
@@ -98,6 +99,9 @@ public:
         RID old_rid = TransformOtidToRid(&old_tid);
         RID new_rid = TransformOtidToRid(&new_tid);
         rocksdb::WriteBatch batch;
+
+        std::lock_guard<std::mutex> lock(mutex_);
+
         // 更新正向索引
         batch.Put(EncodeKey(table_oid, key), std::to_string(new_rid));
 
@@ -116,14 +120,28 @@ public:
         InitTranslator();
         RID rid = TransformOtidToRid(&tid);
         std::string unique_key;
+
+        std::lock_guard<std::mutex> lock(mutex_);
+
         db_->Get(rocksdb::ReadOptions(), EncodeReverseKey(table_oid, rid), &unique_key);
+        if (unique_key == "") {
+            return 0;
+        }
         return std::stoull(unique_key);
     }
     // 通过UniqueKey获取TID
     ItemPointerData GetTidWithKey(Oid table_oid, UniqueKey key) {
         InitTranslator();
         std::string value;
+
+        std::lock_guard<std::mutex> lock(mutex_);
+
         db_->Get(rocksdb::ReadOptions(), EncodeKey(table_oid, key), &value);
+
+        if (value == "") {
+            return TransformRidToTid(0);
+        }
+
         RID rid = std::stoull(value);
         return TransformRidToTid(rid);
     }
@@ -150,6 +168,8 @@ private:
     std::string rocksdb_data_path_ = "/tmp/translator";
     rocksdb::Options options_;
     rocksdb::DB *db_{nullptr};
+    // TODO(singheart): do we really need a mutex in rocksdb?
+    std::mutex mutex_;
 };
 
 extern moodycamel::BlockingConcurrentQueue<std::unique_ptr<zmq::message_t>> transaction_message_queue_;
